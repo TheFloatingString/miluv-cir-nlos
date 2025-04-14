@@ -24,7 +24,12 @@ def is_nlos(y):
     else:
         return 0
 
-X_data = np.asarray([eval(x) for x in df.cir])
+def one_hot_id(idx):
+    arr = [0.0,0.0,0.0,0.0,0.0,0.0]
+    arr[idx] = 1.0
+    return arr
+
+X_data = np.asarray([eval(x+one_hot_id(idx)) for (x, idx) in zip(df.cir, df.to_id)])
 y_data = np.asarray([is_nlos(y) for y in df.to_id])
 
 X_data = normalize(X_data)
