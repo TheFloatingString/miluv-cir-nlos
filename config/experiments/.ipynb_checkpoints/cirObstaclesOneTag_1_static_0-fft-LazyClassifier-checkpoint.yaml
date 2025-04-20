@@ -1,5 +1,5 @@
 experiment:
-  name: "cirObstaclesOneTag_1_static_0-baseline-LazyClassifier"
+  name: "cirObstaclesOneTag_1_static_0-fft-LazyClassifier"
   datasets:
     - "cirObstaclesOneTag_1_static_0"
   orderedPreprocessing:

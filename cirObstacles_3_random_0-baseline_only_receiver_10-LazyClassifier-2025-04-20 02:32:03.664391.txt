@@ -1,0 +1,29 @@
+                               Accuracy  Balanced Accuracy  ROC AUC  F1 Score  Time Taken
+Model                                                                                    
+DecisionTreeClassifier             0.68               0.55     0.55      0.65        0.06
+NearestCentroid                    0.64               0.53     0.53      0.63        0.07
+LGBMClassifier                     0.68               0.51     0.51      0.62        0.10
+LabelPropagation                   0.71               0.50     0.50      0.60        0.02
+ExtraTreesClassifier               0.71               0.50     0.50      0.60        0.12
+DummyClassifier                    0.71               0.50     0.50      0.60        0.02
+RidgeClassifier                    0.71               0.50     0.50      0.60        0.02
+LabelSpreading                     0.71               0.50     0.50      0.60        0.02
+NuSVC                              0.71               0.50     0.50      0.60        0.02
+CalibratedClassifierCV             0.71               0.50     0.50      0.60        0.07
+BernoulliNB                        0.61               0.50     0.50      0.60        0.02
+RidgeClassifierCV                  0.71               0.50     0.50      0.60        0.02
+SVC                                0.71               0.50     0.50      0.60        0.03
+LogisticRegression                 0.71               0.50     0.50      0.60        0.03
+GaussianNB                         0.64               0.49     0.49      0.60        0.02
+RandomForestClassifier             0.68               0.47     0.47      0.58        0.26
+LinearDiscriminantAnalysis         0.68               0.47     0.47      0.58        0.14
+ExtraTreeClassifier                0.57               0.47     0.47      0.57        0.02
+AdaBoostClassifier                 0.61               0.46     0.46      0.58        0.62
+SGDClassifier                      0.61               0.46     0.46      0.58        0.02
+KNeighborsClassifier               0.64               0.45     0.45      0.56        0.04
+BaggingClassifier                  0.61               0.42     0.42      0.54        0.25
+XGBClassifier                      0.61               0.42     0.42      0.54        0.45
+LinearSVC                          0.54               0.38     0.38      0.50        0.10
+PassiveAggressiveClassifier        0.54               0.38     0.38      0.50        0.03
+Perceptron                         0.46               0.33     0.33      0.45        0.02
+QuadraticDiscriminantAnalysis      0.25               0.29     0.29      0.26        0.12

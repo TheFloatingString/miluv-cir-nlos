@@ -9,3 +9,8 @@ Requires-Dist: matplotlib>=3.10.1
 Requires-Dist: pandas>=2.2.3
 Requires-Dist: scikit-learn>=1.6.1
 Requires-Dist: pyyaml
+
+```bash
+pip install .
+sh scripts/experiments/batch/run_batch.sh
+```
