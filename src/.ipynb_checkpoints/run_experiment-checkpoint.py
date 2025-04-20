@@ -30,7 +30,17 @@ def run_experiment(yaml_config_filepath: str):
         print(miluv_exp_name)
         for dirname in os.listdir(f"data/{miluv_exp_name}"):
             if "ifo" in dirname: # TODO: not robust enough
-                list_of_dfs.append(pd.read_csv(f"data/{miluv_exp_name}/{dirname}/uwb_cir.csv"))
+                df_tmp = pd.read_csv(f"data/{miluv_exp_name}/{dirname}/uwb_cir.csv")
+
+                if "distance_scaling" in exp_config["experiment"]["orderedPreprocessing"]:
+                    # TODO WIP
+                    pass
+                    # df_dist = pd.read_csv(f"data/{miluv_exp_name}/{dirname}/mocap.csv")
+                    # differences = np.abs(df['timestamp'] - target)
+                    # nearest_index = differences.idxmin()
+                    # df_dist = df_dist[df_dist]
+
+                list_of_dfs.append(df_tmp)
 
     df = pd.concat(list_of_dfs)
     print(df.shape)
