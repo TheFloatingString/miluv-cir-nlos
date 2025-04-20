@@ -1,8 +1,10 @@
 experiment:
-  name: "cirObstacles_1_random3_0-baseline-LazyClassifier"
+  name: "cirObstacles_1_random3_0-fft_only_receiver_11-LazyClassifier"
   datasets:
     - "cirObstacles_1_random3_0"
   orderedPreprocessing:
+    - "filter_receiver_only_11"
+    - "fft"
     - "sklearn_normalize"
   classifier: "LazyClassifier"
   task: "NLOS_binary"
