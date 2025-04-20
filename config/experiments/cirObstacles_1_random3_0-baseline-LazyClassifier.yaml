@@ -1,5 +1,5 @@
 experiment:
-  name: "1drone_random-baseline-LazyClassifier"
+  name: "cirObstacles_1_random3_0-baseline-LazyClassifier"
   datasets:
     - "cirObstacles_1_random3_0"
   orderedPreprocessing:
