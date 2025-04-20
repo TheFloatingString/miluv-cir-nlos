@@ -1,0 +1,8 @@
+experiment:
+  name: "1drone_random-baseline-LazyClassifier"
+  datasets:
+    - "cirObstacles_1_random3_0"
+  orderedPreprocessing:
+    - "sklearn_normalize"
+  classifier: "LazyClassifier"
+    
