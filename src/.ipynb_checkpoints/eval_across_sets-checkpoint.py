@@ -17,8 +17,6 @@ import datetime
 import os
 
 
-ONLY_SVC = True
-
 uwb_constellation_pos = {
     0: {
         0: [3.273827392578125, 3.46404736328125, 1.8093309326171875],
@@ -40,6 +38,13 @@ def filter_by_drone_receiver(df: pd.DataFrame, receiver_id: int) -> pd.DataFrame
     return df[df.from_id==receiver_id]
 
 def run_experiment(yaml_config_filepath: str):
+
+    FILEPATH = "svm_static-distance_scale_with_minmax.pkl"
+    
+    with open(FILEPATH, "rb") as pklfile:
+        clf = pickle.load(pklfile)
+    
+    
     with open(yaml_config_filepath) as configfile:
         exp_config = yaml.load(configfile.read(), Loader=yaml.Loader)
     pprint(exp_config)
@@ -127,25 +132,8 @@ def run_experiment(yaml_config_filepath: str):
                     X_data = scaler.fit_transform(X_data)
     
         X_train, X_test, y_train, y_test = train_test_split(X_data, y_data, test_size=0.2, random_state=0)
-    
-        if exp_config[curr_exp_name]["classifier"] == "LazyClassifier":
 
-            if ONLY_SVC:
-                clf = SVC()
-                clf.fit(X_train, y_train)
-                print(clf.score(X_test, y_test))
-                with open('clf.pkl', 'wb') as f:
-                    pickle.dump(clf, f)
-            else:
-                clf = LazyClassifier()
-                models, predictions = clf.fit(X_train, X_test, y_train, y_test)
-                print(models)
-        
-                models.to_csv(f"{exp_config[curr_exp_name]['name']}-{str(datetime.datetime.now())}.csv")
-        
-                with open(f"{exp_config[curr_exp_name]['name']}-{str(datetime.datetime.now())}.txt", 'w') as outputfile:
-                    outputfile.write(str(models))
-                    outputfile.close()
+        print(clf.score(X_test, y_test))
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
@@ -153,3 +141,4 @@ if __name__ == "__main__":
     args = parser.parse_args()
     print(args.yaml_config_filepath)
     run_experiment(yaml_config_filepath=args.yaml_config_filepath)
+

@@ -6,13 +6,18 @@ from lazypredict.Supervised import LazyClassifier
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import normalize
 from sklearn.preprocessing import MinMaxScaler
+from sklearn.svm import SVC
 
 from pprint import pprint
+import pickle
 
 import numpy as np
 import matplotlib.pyplot as plt
 import datetime
 import os
+
+
+ONLY_SVC = True
 
 uwb_constellation_pos = {
     0: {
@@ -124,16 +129,23 @@ def run_experiment(yaml_config_filepath: str):
         X_train, X_test, y_train, y_test = train_test_split(X_data, y_data, test_size=0.2, random_state=0)
     
         if exp_config[curr_exp_name]["classifier"] == "LazyClassifier":
-            
-            clf = LazyClassifier()
-            models, predictions = clf.fit(X_train, X_test, y_train, y_test)
-            print(models)
-    
-            models.to_csv(f"{exp_config[curr_exp_name]['name']}-{str(datetime.datetime.now())}.csv")
-    
-            with open(f"{exp_config[curr_exp_name]['name']}-{str(datetime.datetime.now())}.txt", 'w') as outputfile:
-                outputfile.write(str(models))
-                outputfile.close()
+
+            if ONLY_SVC:
+                clf = SVC()
+                clf.fit(X_train, y_train)
+                print(clf.score(X_test, y_test))
+                with open('clf.pkl', 'wb') as f:
+                    pickle.dump(clf, f)
+            else:
+                clf = LazyClassifier()
+                models, predictions = clf.fit(X_train, X_test, y_train, y_test)
+                print(models)
+        
+                models.to_csv(f"{exp_config[curr_exp_name]['name']}-{str(datetime.datetime.now())}.csv")
+        
+                with open(f"{exp_config[curr_exp_name]['name']}-{str(datetime.datetime.now())}.txt", 'w') as outputfile:
+                    outputfile.write(str(models))
+                    outputfile.close()
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()

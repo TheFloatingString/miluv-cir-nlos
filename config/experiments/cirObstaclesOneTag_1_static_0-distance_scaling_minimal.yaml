@@ -1,0 +1,11 @@
+experiment-3:
+  name: "cirObstaclesOneTag_1_static_0-distance_scaling-exp_3-LazyClassifier"
+  datasets:
+    - "cirObstaclesOneTag_1_static_0"
+  orderedPreprocessing:
+    - "distance_scaling"
+    # - "fft"
+    - "MinMaxScaler"
+    # - "sklearn_normalize"
+  classifier: "LazyClassifier"
+  task: "NLOS_binary"
