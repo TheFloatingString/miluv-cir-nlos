@@ -26,18 +26,21 @@ uwb_constellation_pos = {
         2: [2.850500244140625, -2.923056884765625, 1.89742041015625],
         3: [-2.497634521484375, -3.5018203125, 1.7730911865234375],
         4: [-2.95793310546875, 0.6128419189453125, 1.65714208984375],
-        5: [-2.734676513671875, 3.65854248046875, 1.890254638671875]
+        5: [-2.734676513671875, 3.65854248046875, 1.890254638671875],
     }
 }
 
+
 def is_nlos(y):
-    if y in [1,3,4]:
+    if y in [1, 3, 4]:
         return 1
     else:
         return 0
 
+
 def filter_by_drone_receiver(df: pd.DataFrame, receiver_id: int) -> pd.DataFrame:
-    return df[df.from_id==receiver_id]
+    return df[df.from_id == receiver_id]
+
 
 def run_experiment(yaml_config_filepath: str):
     with open(yaml_config_filepath) as configfile:
@@ -49,103 +52,128 @@ def run_experiment(yaml_config_filepath: str):
         for miluv_exp_name in exp_config[curr_exp_name]["datasets"]:
             print(miluv_exp_name)
             for dirname in os.listdir(f"data/{miluv_exp_name}"):
-                if "ifo" in dirname: # TODO: not robust enough
+                if "ifo" in dirname:  # TODO: not robust enough
                     df_tmp = pd.read_csv(f"data/{miluv_exp_name}/{dirname}/uwb_cir.csv")
-                    dist_from_drone_to_uwb = []                
-                    if "distance_scaling" in exp_config[curr_exp_name]["orderedPreprocessing"]:
+                    dist_from_drone_to_uwb = []
+                    if (
+                        "ranging_scaling"
+                        in exp_config[curr_exp_name]["orderedPreprocessing"]
+                    ):
+                        pass
+                    if (
+                        "distance_scaling"
+                        in exp_config[curr_exp_name]["orderedPreprocessing"]
+                    ):
                         # TODO WIP
-                        df_dist = pd.read_csv(f"data/{miluv_exp_name}/{dirname}/mocap.csv")
-    
+                        df_dist = pd.read_csv(
+                            f"data/{miluv_exp_name}/{dirname}/mocap.csv"
+                        )
+
                         for idx, row in df_tmp.iterrows():
                             target = row["timestamp"]
                             # print(target)
-                            differences = np.abs(df_dist['timestamp'] - target)
+                            differences = np.abs(df_dist["timestamp"] - target)
                             nearest_index = differences.idxmin()
                             # print(nearest_index)
                             # print(df_dist.loc[nearest_index])
                             # print(df_dist.loc[nearest_index]["pose.position.x"])
                             # print(df_dist.loc[nearest_index]["pose.position.y"])
                             # print(df_dist.loc[nearest_index]["pose.position.z"])
-    
+
                             drone_x = df_dist.loc[nearest_index]["pose.position.x"]
                             drone_y = df_dist.loc[nearest_index]["pose.position.y"]
                             drone_z = df_dist.loc[nearest_index]["pose.position.z"]
-    
+
                             anchor_id = int(row["to_id"])
-    
+
                             drone_pos = np.asarray([drone_x, drone_y, drone_z])
                             uwb_pos = np.asarray(uwb_constellation_pos[0][anchor_id])
-                            
-                            abs_dist = np.linalg.norm(drone_pos-uwb_pos)
+
+                            abs_dist = np.linalg.norm(drone_pos - uwb_pos)
                             dist_from_drone_to_uwb.append(abs_dist)
                             # print(abs_dist)
-                            
+
                         df_tmp["dist_drone_to_uwb"] = dist_from_drone_to_uwb
                         print(df_tmp["dist_drone_to_uwb"].values)
                     list_of_dfs.append(df_tmp)
-    
+
         df = pd.concat(list_of_dfs)
         print(df.shape)
         print(df.head())
-    
+
         if exp_config[curr_exp_name]["orderedPreprocessing"] is not None:
-            for preprocessing_method in exp_config[curr_exp_name]["orderedPreprocessing"]:
-                if preprocessing_method=="filter_receiver_only_10":
+            for preprocessing_method in exp_config[curr_exp_name][
+                "orderedPreprocessing"
+            ]:
+                if preprocessing_method == "filter_receiver_only_10":
                     df = filter_by_drone_receiver(df, receiver_id=10)
-                if preprocessing_method=="filter_receiver_only_11":
+                if preprocessing_method == "filter_receiver_only_11":
                     df = filter_by_drone_receiver(df, receiver_id=11)
-                    
+
         X_data = np.asarray([eval(x) for x in df.cir])
-        
+
         if exp_config[curr_exp_name].get("task") is None:
             raise ValueError("you must specify a task in the .yaml config file")
-        elif exp_config[curr_exp_name]["task"]=="NLOS_binary":
+        elif exp_config[curr_exp_name]["task"] == "NLOS_binary":
             y_data = np.asarray([is_nlos(y) for y in df.to_id])
         else:
             raise ValueError("task from the .yaml config file not recognized")
-    
+
         if exp_config[curr_exp_name]["orderedPreprocessing"] is not None:
-            for preprocessing_method in exp_config[curr_exp_name]["orderedPreprocessing"]:
-                if "distance_scaling" in exp_config[curr_exp_name]["orderedPreprocessing"]:
+            for preprocessing_method in exp_config[curr_exp_name][
+                "orderedPreprocessing"
+            ]:
+                if (
+                    "distance_scaling"
+                    in exp_config[curr_exp_name]["orderedPreprocessing"]
+                ):
                     print(df.dist_drone_to_uwb.values)
                     assert X_data.shape[0] == df["dist_drone_to_uwb"].values.shape[0]
                     for idx in range(len(X_data)):
                         # print(X_data[idx])
-                        X_data[idx] = (df["dist_drone_to_uwb"].values[idx]**2)*X_data[idx]
+                        X_data[idx] = (
+                            df["dist_drone_to_uwb"].values[idx] ** 2
+                        ) * X_data[idx]
                         # print(X_data[idx])
                         # print()
-                
-                if preprocessing_method=="sklearn_normalize":
-                    X_data = normalize(X_data)     
-                    
-                
-                if preprocessing_method=="fft":
+
+                if preprocessing_method == "sklearn_normalize":
+                    X_data = normalize(X_data)
+
+                if preprocessing_method == "fft":
                     X_data = np.real(np.fft.fft(X_data))
-    
-                if preprocessing_method=="MinMaxScaler":
+
+                if preprocessing_method == "MinMaxScaler":
                     scaler = MinMaxScaler()
                     X_data = scaler.fit_transform(X_data)
-    
-        X_train, X_test, y_train, y_test = train_test_split(X_data, y_data, test_size=0.2, random_state=0)
-    
-        if exp_config[curr_exp_name]["classifier"] == "LazyClassifier":
 
+        X_train, X_test, y_train, y_test = train_test_split(
+            X_data, y_data, test_size=0.2, random_state=0
+        )
+
+        if exp_config[curr_exp_name]["classifier"] == "LazyClassifier":
             if ONLY_SVC:
                 clf = SVC()
                 clf.fit(X_train, y_train)
                 print(clf.score(X_test, y_test))
-                with open('clf.pkl', 'wb') as f:
+                with open("clf.pkl", "wb") as f:
                     pickle.dump(clf, f)
             else:
                 clf = LazyClassifier()
                 models, predictions = clf.fit(X_train, X_test, y_train, y_test)
                 print(models)
-        
-                models.to_csv(f"{exp_config[curr_exp_name]['name']}-{str(datetime.datetime.now())}.csv")
-        
-                with open(f"{exp_config[curr_exp_name]['name']}-{str(datetime.datetime.now())}.txt", 'w') as outputfile:
+
+                models.to_csv(
+                    f"{exp_config[curr_exp_name]['name']}-{str(datetime.datetime.now())}.csv"
+                )
+
+                with open(
+                    f"{exp_config[curr_exp_name]['name']}-{str(datetime.datetime.now())}.txt",
+                    "w",
+                ) as outputfile:
                     outputfile.write(str(models))
                     outputfile.close()
+
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
