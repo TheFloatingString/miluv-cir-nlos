@@ -4,10 +4,6 @@ experiment-1:
     - "cirObstacles_1_random3_0"
   orderedPreprocessing:
     - "skip"
-    # - "distance_scaling"
-    # - "fft"
-    # - "MinMaxScaler"
-    # - "sklearn_normalize"
   classifier: "LazyClassifier"
   task: "NLOS_binary"
 
@@ -16,10 +12,7 @@ experiment-2:
   datasets:
     - "cirObstacles_1_random3_0"
   orderedPreprocessing:
-    # - "distance_scaling"
-    # - "fft"
     - "MinMaxScaler"
-    # - "sklearn_normalize"
   classifier: "LazyClassifier"
   task: "NLOS_binary"
 
@@ -29,9 +22,7 @@ experiment-3:
     - "cirObstacles_1_random3_0"
   orderedPreprocessing:
     - "distance_scaling"
-    # - "fft"
     - "MinMaxScaler"
-    # - "sklearn_normalize"
   classifier: "LazyClassifier"
   task: "NLOS_binary"
 
@@ -43,7 +34,6 @@ experiment-4:
     - "distance_scaling"
     - "fft"
     - "MinMaxScaler"
-    # - "sklearn_normalize"
   classifier: "LazyClassifier"
   task: "NLOS_binary"
 
@@ -52,11 +42,8 @@ experiment-5:
   datasets:
     - "cirObstacles_1_random3_0"
   orderedPreprocessing:
-    # - "skip"
-    # - "distance_scaling"
     - "fft"
     - "MinMaxScaler"
-    # - "sklearn_normalize"
   classifier: "LazyClassifier"
   task: "NLOS_binary"
 
@@ -65,10 +52,6 @@ experiment-6:
   datasets:
     - "cirObstacles_1_random3_0"
   orderedPreprocessing:
-    # - "skip"
     - "distance_scaling"
-    # - "fft"
-    # - "MinMaxScaler"
-    # - "sklearn_normalize"
   classifier: "LazyClassifier"
   task: "NLOS_binary"

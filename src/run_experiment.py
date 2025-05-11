@@ -3,6 +3,7 @@ import yaml
 import pandas as pd
 
 from lazypredict.Supervised import LazyClassifier
+from sklearn.metrics import accuracy_score, roc_auc_score
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import normalize
 from sklearn.preprocessing import MinMaxScaler
@@ -15,6 +16,9 @@ import numpy as np
 import matplotlib.pyplot as plt
 import datetime
 import os
+
+
+from tabpfn import TabPFNClassifier
 
 
 ONLY_SVC = True
@@ -48,6 +52,7 @@ def run_experiment(yaml_config_filepath: str):
     pprint(exp_config)
 
     for curr_exp_name in exp_config.keys():
+        print(f"exp_name: {curr_exp_name}")
         list_of_dfs = []
         for miluv_exp_name in exp_config[curr_exp_name]["datasets"]:
             print(miluv_exp_name)
@@ -151,6 +156,8 @@ def run_experiment(yaml_config_filepath: str):
             X_data, y_data, test_size=0.2, random_state=0
         )
 
+        print("asdjfilasjd")
+
         if exp_config[curr_exp_name]["classifier"] == "LazyClassifier":
             if ONLY_SVC:
                 clf = SVC()
@@ -173,7 +180,32 @@ def run_experiment(yaml_config_filepath: str):
                 ) as outputfile:
                     outputfile.write(str(models))
                     outputfile.close()
+        print(exp_config[curr_exp_name]["classifier"])
+        if exp_config[curr_exp_name]["classifier"] == "tabpfn":
+            print("ack")
+            clf = TabPFNClassifier()
+            print('ack')
+            X_train = np.zeros((10,10))
+            y_train = np.zeros(10)
+            X_test = np.zeros((10,10))
+            y_test = np.zeros((10,10))
+            clf.fit(X_train, y_train)
+            print('ack')
+            predictions = clf.predict(X_test)
+            print("Accuracy", accuracy_score(y_test, predictions))
+            print("hi!")
+            # print(models)
 
+            # models.to_csv(
+            #     f"{exp_config[curr_exp_name]['name']}-{str(datetime.datetime.now())}.csv"
+            # )
+
+            # with open(
+            #     f"{exp_config[curr_exp_name]['name']}-{str(datetime.datetime.now())}.txt",
+            #     "w",
+            # ) as outputfile:
+            #     outputfile.write(str(models))
+            #     outputfile.close()
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()

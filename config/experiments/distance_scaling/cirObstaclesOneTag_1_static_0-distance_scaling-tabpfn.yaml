@@ -4,11 +4,7 @@ experiment-1:
     - "cirObstaclesOneTag_1_static_0"
   orderedPreprocessing:
     - "skip"
-    # - "distance_scaling"
-    # - "fft"
-    # - "MinMaxScaler"
-    # - "sklearn_normalize"
-  classifier: "LazyClassifier"
+  classifier: "tabpfn"
   task: "NLOS_binary"
 
 experiment-2:
@@ -17,7 +13,7 @@ experiment-2:
     - "cirObstaclesOneTag_1_static_0"
   orderedPreprocessing:
     - "MinMaxScaler"
-  classifier: "LazyClassifier"
+  classifier: "tabpfn"
   task: "NLOS_binary"
 
 experiment-3:
@@ -27,7 +23,7 @@ experiment-3:
   orderedPreprocessing:
     - "distance_scaling"
     - "MinMaxScaler"
-  classifier: "LazyClassifier"
+  classifier: "tabpfn"
   task: "NLOS_binary"
 
 experiment-4:
@@ -38,7 +34,7 @@ experiment-4:
     - "distance_scaling"
     - "fft"
     - "MinMaxScaler"
-  classifier: "LazyClassifier"
+  classifier: "tabpfn"
   task: "NLOS_binary"
 
 experiment-5:
@@ -48,7 +44,7 @@ experiment-5:
   orderedPreprocessing:
     - "fft"
     - "MinMaxScaler"
-  classifier: "LazyClassifier"
+  classifier: "tabpfn"
   task: "NLOS_binary"
 
 experiment-6:
@@ -57,7 +53,5 @@ experiment-6:
     - "cirObstaclesOneTag_1_static_0"
   orderedPreprocessing:
     - "distance_scaling"
-    # - "fft"
-    # - "MinMaxScaler"
-  classifier: "LazyClassifier"
+  classifier: "tabpfn"
   task: "NLOS_binary"
