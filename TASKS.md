@@ -11,6 +11,10 @@
 + [ ] run with 100-feature and 500-feature clipping
 + [ ] group in triplets ?
 
+## Hotfix
+
++ [ ] Check that ranging must come from specific dataset for multi-dataset tasks
+
 ## Analysis
 
 + [ ] Determine which points fail on the trajectory in 3D

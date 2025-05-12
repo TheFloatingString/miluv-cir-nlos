@@ -1,0 +1,63 @@
+experiment-1:
+  name: "random_only-ranging_scaling-exp_1-LazyClassifier"
+  datasets:
+    - "cirObstacles_1_random3_0"
+    - "cirObstacles_3_random_0"
+  orderedPreprocessing:
+    - "skip"
+  classifier: "LazyClassifier"
+  task: "NLOS_binary"
+
+experiment-2:
+  name: "random_only-ranging_scaling-exp_2-LazyClassifier"
+  datasets:
+    - "cirObstacles_1_random3_0"
+    - "cirObstacles_3_random_0"
+  orderedPreprocessing:
+    - "MinMaxScaler"
+  classifier: "LazyClassifier"
+  task: "NLOS_binary"
+
+experiment-3:
+  name: "random_only-ranging_scaling-exp_3-LazyClassifier"
+  datasets:
+    - "cirObstacles_1_random3_0"
+    - "cirObstacles_3_random_0"
+  orderedPreprocessing:
+    - "ranging_scaling"
+    - "MinMaxScaler"
+  classifier: "LazyClassifier"
+  task: "NLOS_binary"
+
+experiment-4:
+  name: "random_only-ranging_scaling-exp_4-LazyClassifier"
+  datasets:
+    - "cirObstacles_1_random3_0"
+    - "cirObstacles_3_random_0"
+  orderedPreprocessing:
+    - "ranging_scaling"
+    - "fft"
+    - "MinMaxScaler"
+  classifier: "LazyClassifier"
+  task: "NLOS_binary"
+
+experiment-5:
+  name: "random_only-ranging_scaling-exp_5-LazyClassifier"
+  datasets:
+    - "cirObstacles_1_random3_0"
+    - "cirObstacles_3_random_0"
+  orderedPreprocessing:
+    - "fft"
+    - "MinMaxScaler"
+  classifier: "LazyClassifier"
+  task: "NLOS_binary"
+
+experiment-6:
+  name: "random_only-ranging_scaling-exp_6-LazyClassifier"
+  datasets:
+    - "cirObstacles_1_random3_0"
+    - "cirObstacles_3_random_0"
+  orderedPreprocessing:
+    - "ranging_scaling"
+  classifier: "LazyClassifier"
+  task: "NLOS_binary"
