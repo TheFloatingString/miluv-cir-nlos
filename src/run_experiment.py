@@ -36,6 +36,15 @@ uwb_constellation_pos = {
 }
 
 
+def is_within_valid_angle(from_id: int, to_id: int, drone_pos) -> bool:
+    """
+    check whether the drone is within a valid projeced angle
+    """
+    for i in range(6):
+        pass  # check
+    pass
+
+
 def is_nlos(y):
     if y in [1, 3, 4]:
         return 1
@@ -169,11 +178,6 @@ def run_curr_experiment(exp_config, curr_exp_name):
                 ]  # TODO: filtering the .to_id
                 dist_from_drone_to_uwb = []
                 if (
-                    "ranging_scaling"
-                    in exp_config[curr_exp_name]["orderedPreprocessing"]
-                ):
-                    pass
-                if (
                     "distance_scaling"
                     in exp_config[curr_exp_name]["orderedPreprocessing"]
                 ):
@@ -233,17 +237,6 @@ def run_curr_experiment(exp_config, curr_exp_name):
                     if VERBOSE:
                         print(X_data[idx])
                         print()
-
-            # if "ranging_scaling" in exp_config[curr_exp_name]["orderedPreprocessing"]:
-            #     print(df.dist_drone_to_uwb.values)
-            #     assert X_data.shape[0] == df["dist_drone_to_uwb"].values.shape[0]
-            #     for idx in range(len(X_data)):
-            #         X_data[idx] = (df["dist_drone_to_uwb"].values[idx] ** 2) * X_data[
-            #             idx
-            #         ]
-            #         if VERBOSE:
-            #             print(X_data[idx])
-            #             print()
 
             if preprocessing_method == "sklearn_normalize":
                 X_data = normalize(X_data)
