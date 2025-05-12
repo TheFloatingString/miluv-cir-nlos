@@ -184,13 +184,13 @@ def run_experiment(yaml_config_filepath: str):
         if exp_config[curr_exp_name]["classifier"] == "tabpfn":
             print("ack")
             clf = TabPFNClassifier()
-            print('ack')
-            X_train = np.zeros((10,10))
+            print("ack")
+            X_train = np.zeros((10, 10))
             y_train = np.zeros(10)
-            X_test = np.zeros((10,10))
-            y_test = np.zeros((10,10))
+            X_test = np.zeros((10, 10))
+            y_test = np.zeros((10, 10))
             clf.fit(X_train, y_train)
-            print('ack')
+            print("ack")
             predictions = clf.predict(X_test)
             print("Accuracy", accuracy_score(y_test, predictions))
             print("hi!")
@@ -206,6 +206,7 @@ def run_experiment(yaml_config_filepath: str):
             # ) as outputfile:
             #     outputfile.write(str(models))
             #     outputfile.close()
+
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()

@@ -57,9 +57,7 @@ def run_experiment(yaml_config_filepath: str):
 
                 if True:
                     # TODO WIP
-                    df_dist = pd.read_csv(
-                        f"data/{miluv_exp_name}/{dirname}/mocap.csv"
-                    )
+                    df_dist = pd.read_csv(f"data/{miluv_exp_name}/{dirname}/mocap.csv")
 
                     for idx, row in df_tmp.iterrows():
                         target = row["timestamp"]
@@ -100,20 +98,15 @@ def run_experiment(yaml_config_filepath: str):
         assert X_data.shape[0] == df["dist_drone_to_uwb"].values.shape[0]
         for idx in range(len(X_data)):
             # print(X_data[idx])
-            X_data[idx] = (
-                df["dist_drone_to_uwb"].values[idx] ** 2
-            ) * X_data[idx]
+            X_data[idx] = (df["dist_drone_to_uwb"].values[idx] ** 2) * X_data[idx]
             # print(X_data[idx])
             # print()
-
-
 
         scaler = MinMaxScaler()
         X_data = scaler.fit_transform(X_data)
         X_train, X_test, y_train, y_test = train_test_split(
             X_data, y_data, test_size=0.2, random_state=0
         )
-
 
         print("aesdfa")
         clf = TabPFNClassifier()

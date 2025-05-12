@@ -11,4 +11,3 @@ clf.fit(X_train, y_train)  # Should not crash
 predictions = clf.predict(X_test)
 
 print("Predictions:", predictions)
-
