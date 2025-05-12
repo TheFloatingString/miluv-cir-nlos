@@ -251,7 +251,9 @@ def preprocess_data_for_exp(exp_config, curr_exp_name):
 
 
 def run_curr_experiment(exp_config, curr_exp_name):
-    X_data, y_data = preprocess_data_for_exp(exp_config=exp_config, curr_exp_name=curr_exp_name)
+    X_data, y_data = preprocess_data_for_exp(
+        exp_config=exp_config, curr_exp_name=curr_exp_name
+    )
 
     X_train, X_test, y_train, y_test = train_test_split(
         X_data, y_data, test_size=0.2, random_state=0
