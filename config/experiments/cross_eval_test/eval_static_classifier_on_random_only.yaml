@@ -1,0 +1,11 @@
+experiment-3:
+  name: "eval_static_classifier_on_random_only"
+  clf_filepath: "static/May_2025/cirObstaclesOneTag_1_static_0-distance_scaling-svc.pkl"
+  datasets:
+    - "cirObstacles_1_random3_0"
+    - "cirObstacles_3_random_0"
+  orderedPreprocessing:
+    - "distance_scaling"
+    - "MinMaxScaler"
+  classifier: "SVC"
+  task: "NLOS_binary"
