@@ -146,6 +146,14 @@ def get_ranging_dist_between_tags(df_uwb_cir, df_ranging, tag_blind:bool=True):
         ranging_dist_from_drone_to_uwb.append(ranging_dist_idx)
     return ranging_dist_from_drone_to_uwb
 
+def in_bool(main_list, key_list):
+    return_list = []
+    for item in main_list:
+        if item in key_list:
+            return_list.append(True)
+        else:
+            return_list.append(False) 
+    return return_list
 
 def run_curr_experiment(exp_config, curr_exp_name):
     list_of_dfs = []
@@ -154,6 +162,7 @@ def run_curr_experiment(exp_config, curr_exp_name):
         for dirname in os.listdir(f"data/{miluv_exp_name}"):
             if "ifo" in dirname:  # TODO: not robust enough
                 df_tmp = pd.read_csv(f"data/{miluv_exp_name}/{dirname}/uwb_cir.csv")
+                df_tmp = df_tmp[in_bool(df_tmp.to_id, [0,1,2,3,4,5])]   # TODO: filtering the .to_id
                 dist_from_drone_to_uwb = []
                 if (
                     "ranging_scaling"
