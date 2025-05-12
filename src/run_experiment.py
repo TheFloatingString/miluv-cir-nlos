@@ -21,7 +21,8 @@ import os
 from tabpfn import TabPFNClassifier
 
 
-ONLY_SVC = True
+ONLY_SVC = False
+VERBOSE = False
 
 uwb_constellation_pos = {
     0: {
@@ -101,14 +102,8 @@ def get_ground_truth_dist_between_tags(df_uwb_cir, df_dist) -> list:
     dist_from_drone_to_uwb = []
     for idx, row in df_uwb_cir.iterrows():
         target = row["timestamp"]
-        # print(target)
         differences = np.abs(df_dist["timestamp"] - target)
         nearest_index = differences.idxmin()
-        # print(nearest_index)
-        # print(df_dist.loc[nearest_index])
-        # print(df_dist.loc[nearest_index]["pose.position.x"])
-        # print(df_dist.loc[nearest_index]["pose.position.y"])
-        # print(df_dist.loc[nearest_index]["pose.position.z"])
 
         drone_x = df_dist.loc[nearest_index]["pose.position.x"]
         drone_y = df_dist.loc[nearest_index]["pose.position.y"]
@@ -120,8 +115,36 @@ def get_ground_truth_dist_between_tags(df_uwb_cir, df_dist) -> list:
         uwb_pos = np.asarray(uwb_constellation_pos[0][anchor_id])
 
         abs_dist = np.linalg.norm(drone_pos - uwb_pos)
-        dist_drone_to_uwb.append(abs_dist)
+        dist_from_drone_to_uwb.append(abs_dist)
+
+        if VERBOSE:
+            print(target)
+            print(nearest_index)
+            print(df_dist.loc[nearest_index])
+            print(df_dist.loc[nearest_index]["pose.position.x"])
+            print(df_dist.loc[nearest_index]["pose.position.y"])
+            print(df_dist.loc[nearest_index]["pose.position.z"])
+
     return dist_from_drone_to_uwb
+
+
+def get_ranging_dist_between_tags(df_uwb_cir, df_ranging, tag_blind:bool=True):
+    ranging_dist_from_drone_to_uwb = []
+    for idx, row in df_uwb_cir.iterrows():
+        df_mod = df_ranging.copy()
+        target = row["timestamp"]
+        from_id = row["from_id"]
+        to_id = row["to_id"]
+        if not tag_blind:
+            df_mod =  df_mod[df_mod.from_id == from_id]
+            df_mod =  df_mod[df_mod.to_id == to_id]
+
+        differences = np.abs(df_mod["timestamp"] - target)
+        nearest_index = differences.idxmin()
+        ranging_dist_idx = df_mod.loc[nearest_index]["range"]
+        # print(idx, df_ranging.shape)
+        ranging_dist_from_drone_to_uwb.append(ranging_dist_idx)
+    return ranging_dist_from_drone_to_uwb
 
 
 def run_curr_experiment(exp_config, curr_exp_name):
@@ -145,6 +168,18 @@ def run_curr_experiment(exp_config, curr_exp_name):
                     df_dist = pd.read_csv(f"data/{miluv_exp_name}/{dirname}/mocap.csv")
                     df_tmp["dist_drone_to_uwb"] = get_ground_truth_dist_between_tags(
                         df_uwb_cir=df_tmp, df_dist=df_dist
+                    )
+                    print(df_tmp["dist_drone_to_uwb"].values)
+                if (
+                    "ranging_scaling"
+                    in exp_config[curr_exp_name]["orderedPreprocessing"]
+                ):
+                    # TODO WIP
+                    df_ranging = pd.read_csv(
+                        f"data/{miluv_exp_name}/{dirname}/uwb_range.csv"
+                    )
+                    df_tmp["dist_drone_to_uwb"] = get_ranging_dist_between_tags(
+                        df_uwb_cir=df_tmp, df_ranging=df_ranging
                     )
                     print(df_tmp["dist_drone_to_uwb"].values)
                 list_of_dfs.append(df_tmp)
@@ -171,16 +206,31 @@ def run_curr_experiment(exp_config, curr_exp_name):
 
     if exp_config[curr_exp_name]["orderedPreprocessing"] is not None:
         for preprocessing_method in exp_config[curr_exp_name]["orderedPreprocessing"]:
-            if "distance_scaling" in exp_config[curr_exp_name]["orderedPreprocessing"]:
+            if (
+                "distance_scaling" in exp_config[curr_exp_name]["orderedPreprocessing"]
+                or "ranging_scaling"
+                in exp_config[curr_exp_name]["orderedPreprocessing"]
+            ):
                 print(df.dist_drone_to_uwb.values)
                 assert X_data.shape[0] == df["dist_drone_to_uwb"].values.shape[0]
                 for idx in range(len(X_data)):
-                    # print(X_data[idx])
                     X_data[idx] = (df["dist_drone_to_uwb"].values[idx] ** 2) * X_data[
                         idx
                     ]
-                    # print(X_data[idx])
-                    # print()
+                    if VERBOSE:
+                        print(X_data[idx])
+                        print()
+
+            # if "ranging_scaling" in exp_config[curr_exp_name]["orderedPreprocessing"]:
+            #     print(df.dist_drone_to_uwb.values)
+            #     assert X_data.shape[0] == df["dist_drone_to_uwb"].values.shape[0]
+            #     for idx in range(len(X_data)):
+            #         X_data[idx] = (df["dist_drone_to_uwb"].values[idx] ** 2) * X_data[
+            #             idx
+            #         ]
+            #         if VERBOSE:
+            #             print(X_data[idx])
+            #             print()
 
             if preprocessing_method == "sklearn_normalize":
                 X_data = normalize(X_data)
@@ -196,7 +246,6 @@ def run_curr_experiment(exp_config, curr_exp_name):
         X_data, y_data, test_size=0.2, random_state=0
     )
 
-    print("asdjfilasjd")
     print(exp_config[curr_exp_name]["classifier"])
     run_classifier(X_train, X_test, y_train, y_test, exp_config, curr_exp_name)
 

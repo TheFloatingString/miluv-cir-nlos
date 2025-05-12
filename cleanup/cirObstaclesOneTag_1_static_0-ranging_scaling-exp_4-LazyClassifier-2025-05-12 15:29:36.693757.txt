@@ -1,0 +1,29 @@
+                               Accuracy  Balanced Accuracy  ROC AUC  F1 Score  Time Taken
+Model                                                                                    
+ExtraTreesClassifier               0.83               0.83     0.83      0.83        0.27
+LGBMClassifier                     0.82               0.82     0.82      0.82        3.17
+RandomForestClassifier             0.82               0.82     0.82      0.82        1.45
+XGBClassifier                      0.82               0.82     0.82      0.82        2.34
+BaggingClassifier                  0.81               0.81     0.81      0.81        3.17
+AdaBoostClassifier                 0.81               0.81     0.81      0.80      953.07
+DecisionTreeClassifier             0.78               0.78     0.78      0.78        0.65
+NuSVC                              0.76               0.76     0.76      0.75        0.47
+KNeighborsClassifier               0.74               0.74     0.74      0.73        0.03
+LogisticRegression                 0.72               0.72     0.72      0.71        0.05
+ExtraTreeClassifier                0.72               0.72     0.72      0.72        0.03
+LinearSVC                          0.70               0.70     0.70      0.70       11.79
+RidgeClassifierCV                  0.68               0.68     0.68      0.67        0.17
+RidgeClassifier                    0.67               0.67     0.67      0.66        0.04
+LinearDiscriminantAnalysis         0.65               0.65     0.65      0.64        0.22
+Perceptron                         0.64               0.64     0.64      0.64        0.08
+SGDClassifier                      0.63               0.63     0.63      0.63        0.13
+SVC                                0.63               0.63     0.63      0.58        0.35
+LabelSpreading                     0.62               0.62     0.62      0.58        0.06
+LabelPropagation                   0.62               0.62     0.62      0.58        0.05
+PassiveAggressiveClassifier        0.61               0.61     0.61      0.60        0.07
+CalibratedClassifierCV             0.60               0.60     0.60      0.55        5.56
+GaussianNB                         0.57               0.57     0.57      0.57        0.03
+BernoulliNB                        0.57               0.57     0.57      0.57        0.03
+NearestCentroid                    0.51               0.51     0.51      0.51        0.03
+DummyClassifier                    0.50               0.50     0.50      0.33        0.02
+QuadraticDiscriminantAnalysis      0.50               0.50     0.50      0.33        0.15
