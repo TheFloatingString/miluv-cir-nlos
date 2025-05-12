@@ -58,27 +58,27 @@ def filter_by_drone_receiver(df: pd.DataFrame, receiver_id: int) -> pd.DataFrame
 
 def run_classifier(X_train, X_test, y_train, y_test, exp_config, curr_exp_name):
     if exp_config[curr_exp_name]["classifier"] == "LazyClassifier":
-        if ONLY_SVC:
-            clf = SVC()
-            clf.fit(X_train, y_train)
-            print(clf.score(X_test, y_test))
-            with open("clf.pkl", "wb") as f:
-                pickle.dump(clf, f)
-        else:
-            clf = LazyClassifier()
-            models, predictions = clf.fit(X_train, X_test, y_train, y_test)
-            print(models)
+        clf = LazyClassifier()
+        models, predictions = clf.fit(X_train, X_test, y_train, y_test)
+        print(models)
 
-            models.to_csv(
-                f"{exp_config[curr_exp_name]['name']}-{str(datetime.datetime.now())}.csv"
-            )
+        models.to_csv(
+            f"{exp_config[curr_exp_name]['name']}-{str(datetime.datetime.now())}.csv"
+        )
 
-            with open(
-                f"{exp_config[curr_exp_name]['name']}-{str(datetime.datetime.now())}.txt",
-                "w",
-            ) as outputfile:
-                outputfile.write(str(models))
-                outputfile.close()
+        with open(
+            f"{exp_config[curr_exp_name]['name']}-{str(datetime.datetime.now())}.txt",
+            "w",
+        ) as outputfile:
+            outputfile.write(str(models))
+            outputfile.close()
+
+    if exp_config[curr_exp_name]["classifier"] == "SVC":
+        clf = SVC()
+        clf.fit(X_train, y_train)
+        print(clf.score(X_test, y_test))
+        with open("clf.pkl", "wb") as f:
+            pickle.dump(clf, f)
 
     if exp_config[curr_exp_name]["classifier"] == "tabpfn":
         print("ack")
