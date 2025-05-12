@@ -42,169 +42,173 @@ def is_nlos(y):
         return 0
 
 
-def run_lazy_classifier(X_train, X_test, y_train, y_test, exp_config, ONLY_SVC=False):
-    if ONLY_SVC:
-        clf = SVC()
-        clf.fit(X_train, y_train)
-        print(clf.score(X_test, y_test))
-        with open("clf.pkl", "wb") as f:
-            pickle.dump(clf, f)
-    else:
-        clf = LazyClassifier()
-        models, predictions = clf.fit(X_train, X_test, y_train, y_test)
-        print(models)
-
-        models.to_csv(
-            f"{exp_config[curr_exp_name]['name']}-{str(datetime.datetime.now())}.csv"
-        )
-
-        with open(
-            f"{exp_config[curr_exp_name]['name']}-{str(datetime.datetime.now())}.txt",
-            "w",
-        ) as outputfile:
-            outputfile.write(str(models))
-            outputfile.close()
-
-
 def filter_by_drone_receiver(df: pd.DataFrame, receiver_id: int) -> pd.DataFrame:
     return df[df.from_id == receiver_id]
 
 
-def run_experiment(yaml_config_filepath: str):
+def run_classifier(X_train, X_test, y_train, y_test, exp_config, curr_exp_name):
+    if exp_config[curr_exp_name]["classifier"] == "LazyClassifier":
+        if ONLY_SVC:
+            clf = SVC()
+            clf.fit(X_train, y_train)
+            print(clf.score(X_test, y_test))
+            with open("clf.pkl", "wb") as f:
+                pickle.dump(clf, f)
+        else:
+            clf = LazyClassifier()
+            models, predictions = clf.fit(X_train, X_test, y_train, y_test)
+            print(models)
+
+            models.to_csv(
+                f"{exp_config[curr_exp_name]['name']}-{str(datetime.datetime.now())}.csv"
+            )
+
+            with open(
+                f"{exp_config[curr_exp_name]['name']}-{str(datetime.datetime.now())}.txt",
+                "w",
+            ) as outputfile:
+                outputfile.write(str(models))
+                outputfile.close()
+
+    if exp_config[curr_exp_name]["classifier"] == "tabpfn":
+        print("ack")
+        clf = TabPFNClassifier()
+        print("ack")
+        X_train = np.zeros((10, 10))
+        y_train = np.zeros(10)
+        X_test = np.zeros((10, 10))
+        y_test = np.zeros((10, 10))
+        clf.fit(X_train, y_train)
+        print("ack")
+        predictions = clf.predict(X_test)
+        print("Accuracy", accuracy_score(y_test, predictions))
+        print("hi!")
+        # print(models)
+
+        # models.to_csv(
+        #     f"{exp_config[curr_exp_name]['name']}-{str(datetime.datetime.now())}.csv"
+        # )
+
+        # with open(
+        #     f"{exp_config[curr_exp_name]['name']}-{str(datetime.datetime.now())}.txt",
+        #     "w",
+        # ) as outputfile:
+        #     outputfile.write(str(models))
+        #     outputfile.close()
+
+
+def get_ground_truth_dist_between_tags(df_uwb_cir, df_dist) -> list:
+    dist_from_drone_to_uwb = []
+    for idx, row in df_uwb_cir.iterrows():
+        target = row["timestamp"]
+        # print(target)
+        differences = np.abs(df_dist["timestamp"] - target)
+        nearest_index = differences.idxmin()
+        # print(nearest_index)
+        # print(df_dist.loc[nearest_index])
+        # print(df_dist.loc[nearest_index]["pose.position.x"])
+        # print(df_dist.loc[nearest_index]["pose.position.y"])
+        # print(df_dist.loc[nearest_index]["pose.position.z"])
+
+        drone_x = df_dist.loc[nearest_index]["pose.position.x"]
+        drone_y = df_dist.loc[nearest_index]["pose.position.y"]
+        drone_z = df_dist.loc[nearest_index]["pose.position.z"]
+
+        anchor_id = int(row["to_id"])
+
+        drone_pos = np.asarray([drone_x, drone_y, drone_z])
+        uwb_pos = np.asarray(uwb_constellation_pos[0][anchor_id])
+
+        abs_dist = np.linalg.norm(drone_pos - uwb_pos)
+        dist_drone_to_uwb.append(abs_dist)
+    return dist_from_drone_to_uwb
+
+
+def run_curr_experiment(exp_config, curr_exp_name):
+    list_of_dfs = []
+    for miluv_exp_name in exp_config[curr_exp_name]["datasets"]:
+        print(miluv_exp_name)
+        for dirname in os.listdir(f"data/{miluv_exp_name}"):
+            if "ifo" in dirname:  # TODO: not robust enough
+                df_tmp = pd.read_csv(f"data/{miluv_exp_name}/{dirname}/uwb_cir.csv")
+                dist_from_drone_to_uwb = []
+                if (
+                    "ranging_scaling"
+                    in exp_config[curr_exp_name]["orderedPreprocessing"]
+                ):
+                    pass
+                if (
+                    "distance_scaling"
+                    in exp_config[curr_exp_name]["orderedPreprocessing"]
+                ):
+                    # TODO WIP
+                    df_dist = pd.read_csv(f"data/{miluv_exp_name}/{dirname}/mocap.csv")
+                    df_tmp["dist_drone_to_uwb"] = get_ground_truth_dist_between_tags(
+                        df_uwb_cir=df_tmp, df_dist=df_dist
+                    )
+                    print(df_tmp["dist_drone_to_uwb"].values)
+                list_of_dfs.append(df_tmp)
+
+    df = pd.concat(list_of_dfs)
+    print(df.shape)
+    print(df.head())
+
+    if exp_config[curr_exp_name]["orderedPreprocessing"] is not None:
+        for preprocessing_method in exp_config[curr_exp_name]["orderedPreprocessing"]:
+            if preprocessing_method == "filter_receiver_only_10":
+                df = filter_by_drone_receiver(df, receiver_id=10)
+            if preprocessing_method == "filter_receiver_only_11":
+                df = filter_by_drone_receiver(df, receiver_id=11)
+
+    X_data = np.asarray([eval(x) for x in df.cir])
+
+    if exp_config[curr_exp_name].get("task") is None:
+        raise ValueError("you must specify a task in the .yaml config file")
+    elif exp_config[curr_exp_name]["task"] == "NLOS_binary":
+        y_data = np.asarray([is_nlos(y) for y in df.to_id])
+    else:
+        raise ValueError("task from the .yaml config file not recognized")
+
+    if exp_config[curr_exp_name]["orderedPreprocessing"] is not None:
+        for preprocessing_method in exp_config[curr_exp_name]["orderedPreprocessing"]:
+            if "distance_scaling" in exp_config[curr_exp_name]["orderedPreprocessing"]:
+                print(df.dist_drone_to_uwb.values)
+                assert X_data.shape[0] == df["dist_drone_to_uwb"].values.shape[0]
+                for idx in range(len(X_data)):
+                    # print(X_data[idx])
+                    X_data[idx] = (df["dist_drone_to_uwb"].values[idx] ** 2) * X_data[
+                        idx
+                    ]
+                    # print(X_data[idx])
+                    # print()
+
+            if preprocessing_method == "sklearn_normalize":
+                X_data = normalize(X_data)
+
+            if preprocessing_method == "fft":
+                X_data = np.real(np.fft.fft(X_data))
+
+            if preprocessing_method == "MinMaxScaler":
+                scaler = MinMaxScaler()
+                X_data = scaler.fit_transform(X_data)
+
+    X_train, X_test, y_train, y_test = train_test_split(
+        X_data, y_data, test_size=0.2, random_state=0
+    )
+
+    print("asdjfilasjd")
+    print(exp_config[curr_exp_name]["classifier"])
+    run_classifier(X_train, X_test, y_train, y_test, exp_config, curr_exp_name)
+
+
+def run_all_experiments(yaml_config_filepath: str):
     with open(yaml_config_filepath) as configfile:
         exp_config = yaml.load(configfile.read(), Loader=yaml.Loader)
     pprint(exp_config)
 
     for curr_exp_name in exp_config.keys():
         print(f"exp_name: {curr_exp_name}")
-        list_of_dfs = []
-        for miluv_exp_name in exp_config[curr_exp_name]["datasets"]:
-            print(miluv_exp_name)
-            for dirname in os.listdir(f"data/{miluv_exp_name}"):
-                if "ifo" in dirname:  # TODO: not robust enough
-                    df_tmp = pd.read_csv(f"data/{miluv_exp_name}/{dirname}/uwb_cir.csv")
-                    dist_from_drone_to_uwb = []
-                    if (
-                        "ranging_scaling"
-                        in exp_config[curr_exp_name]["orderedPreprocessing"]
-                    ):
-                        pass
-                    if (
-                        "distance_scaling"
-                        in exp_config[curr_exp_name]["orderedPreprocessing"]
-                    ):
-                        # TODO WIP
-                        df_dist = pd.read_csv(
-                            f"data/{miluv_exp_name}/{dirname}/mocap.csv"
-                        )
-
-                        for idx, row in df_tmp.iterrows():
-                            target = row["timestamp"]
-                            # print(target)
-                            differences = np.abs(df_dist["timestamp"] - target)
-                            nearest_index = differences.idxmin()
-                            # print(nearest_index)
-                            # print(df_dist.loc[nearest_index])
-                            # print(df_dist.loc[nearest_index]["pose.position.x"])
-                            # print(df_dist.loc[nearest_index]["pose.position.y"])
-                            # print(df_dist.loc[nearest_index]["pose.position.z"])
-
-                            drone_x = df_dist.loc[nearest_index]["pose.position.x"]
-                            drone_y = df_dist.loc[nearest_index]["pose.position.y"]
-                            drone_z = df_dist.loc[nearest_index]["pose.position.z"]
-
-                            anchor_id = int(row["to_id"])
-
-                            drone_pos = np.asarray([drone_x, drone_y, drone_z])
-                            uwb_pos = np.asarray(uwb_constellation_pos[0][anchor_id])
-
-                            abs_dist = np.linalg.norm(drone_pos - uwb_pos)
-                            dist_from_drone_to_uwb.append(abs_dist)
-                            # print(abs_dist)
-
-                        df_tmp["dist_drone_to_uwb"] = dist_from_drone_to_uwb
-                        print(df_tmp["dist_drone_to_uwb"].values)
-                    list_of_dfs.append(df_tmp)
-
-        df = pd.concat(list_of_dfs)
-        print(df.shape)
-        print(df.head())
-
-        if exp_config[curr_exp_name]["orderedPreprocessing"] is not None:
-            for preprocessing_method in exp_config[curr_exp_name][
-                "orderedPreprocessing"
-            ]:
-                if preprocessing_method == "filter_receiver_only_10":
-                    df = filter_by_drone_receiver(df, receiver_id=10)
-                if preprocessing_method == "filter_receiver_only_11":
-                    df = filter_by_drone_receiver(df, receiver_id=11)
-
-        X_data = np.asarray([eval(x) for x in df.cir])
-
-        if exp_config[curr_exp_name].get("task") is None:
-            raise ValueError("you must specify a task in the .yaml config file")
-        elif exp_config[curr_exp_name]["task"] == "NLOS_binary":
-            y_data = np.asarray([is_nlos(y) for y in df.to_id])
-        else:
-            raise ValueError("task from the .yaml config file not recognized")
-
-        if exp_config[curr_exp_name]["orderedPreprocessing"] is not None:
-            for preprocessing_method in exp_config[curr_exp_name][
-                "orderedPreprocessing"
-            ]:
-                if (
-                    "distance_scaling"
-                    in exp_config[curr_exp_name]["orderedPreprocessing"]
-                ):
-                    print(df.dist_drone_to_uwb.values)
-                    assert X_data.shape[0] == df["dist_drone_to_uwb"].values.shape[0]
-                    for idx in range(len(X_data)):
-                        # print(X_data[idx])
-                        X_data[idx] = (
-                            df["dist_drone_to_uwb"].values[idx] ** 2
-                        ) * X_data[idx]
-                        # print(X_data[idx])
-                        # print()
-
-                if preprocessing_method == "sklearn_normalize":
-                    X_data = normalize(X_data)
-
-                if preprocessing_method == "fft":
-                    X_data = np.real(np.fft.fft(X_data))
-
-                if preprocessing_method == "MinMaxScaler":
-                    scaler = MinMaxScaler()
-                    X_data = scaler.fit_transform(X_data)
-
-        X_train, X_test, y_train, y_test = train_test_split(
-            X_data, y_data, test_size=0.2, random_state=0
-        )
-
-        print("asdjfilasjd")
-
-        # classifier stage
-        if exp_config[curr_exp_name]["classifier"] == "LazyClassifier":
-            run_lazy_classifier(X_train, X_test, y_train, y_test, exp_config, ONLY_SVC)
-        elif exp_config[curr_exp_name]["classifier"] == "tabpfn":
-            print("ack")
-            clf = TabPFNClassifier(ignore_pretraining_limits=True)
-            clf.fit(X_train, y_train)
-            print("ack")
-            predictions = clf.predict(X_test)
-            print("Accuracy", accuracy_score(y_test, predictions))
-            print("hi!")
-            # print(models)
-
-            # models.to_csv(
-            #     f"{exp_config[curr_exp_name]['name']}-{str(datetime.datetime.now())}.csv"
-            # )
-
-            # with open(
-            #     f"{exp_config[curr_exp_name]['name']}-{str(datetime.datetime.now())}.txt",
-            #     "w",
-            # ) as outputfile:
-            #     outputfile.write(str(models))
-            #     outputfile.close()
+        run_curr_experiment(exp_config, curr_exp_name)
 
 
 if __name__ == "__main__":
@@ -212,4 +216,4 @@ if __name__ == "__main__":
     parser.add_argument("yaml_config_filepath")
     args = parser.parse_args()
     print(args.yaml_config_filepath)
-    run_experiment(yaml_config_filepath=args.yaml_config_filepath)
+    run_all_experiments(yaml_config_filepath=args.yaml_config_filepath)
