@@ -42,6 +42,30 @@ def is_nlos(y):
         return 0
 
 
+def run_lazy_classifier(X_train, X_test, y_train, y_test, exp_config, ONLY_SVC=False):
+    if ONLY_SVC:
+        clf = SVC()
+        clf.fit(X_train, y_train)
+        print(clf.score(X_test, y_test))
+        with open("clf.pkl", "wb") as f:
+            pickle.dump(clf, f)
+    else:
+        clf = LazyClassifier()
+        models, predictions = clf.fit(X_train, X_test, y_train, y_test)
+        print(models)
+
+        models.to_csv(
+            f"{exp_config[curr_exp_name]['name']}-{str(datetime.datetime.now())}.csv"
+        )
+
+        with open(
+            f"{exp_config[curr_exp_name]['name']}-{str(datetime.datetime.now())}.txt",
+            "w",
+        ) as outputfile:
+            outputfile.write(str(models))
+            outputfile.close()
+
+
 def filter_by_drone_receiver(df: pd.DataFrame, receiver_id: int) -> pd.DataFrame:
     return df[df.from_id == receiver_id]
 
@@ -158,37 +182,12 @@ def run_experiment(yaml_config_filepath: str):
 
         print("asdjfilasjd")
 
+        # classifier stage
         if exp_config[curr_exp_name]["classifier"] == "LazyClassifier":
-            if ONLY_SVC:
-                clf = SVC()
-                clf.fit(X_train, y_train)
-                print(clf.score(X_test, y_test))
-                with open("clf.pkl", "wb") as f:
-                    pickle.dump(clf, f)
-            else:
-                clf = LazyClassifier()
-                models, predictions = clf.fit(X_train, X_test, y_train, y_test)
-                print(models)
-
-                models.to_csv(
-                    f"{exp_config[curr_exp_name]['name']}-{str(datetime.datetime.now())}.csv"
-                )
-
-                with open(
-                    f"{exp_config[curr_exp_name]['name']}-{str(datetime.datetime.now())}.txt",
-                    "w",
-                ) as outputfile:
-                    outputfile.write(str(models))
-                    outputfile.close()
-        print(exp_config[curr_exp_name]["classifier"])
-        if exp_config[curr_exp_name]["classifier"] == "tabpfn":
+            run_lazy_classifier(X_train, X_test, y_train, y_test, exp_config, ONLY_SVC)
+        elif exp_config[curr_exp_name]["classifier"] == "tabpfn":
             print("ack")
-            clf = TabPFNClassifier()
-            print("ack")
-            X_train = np.zeros((10, 10))
-            y_train = np.zeros(10)
-            X_test = np.zeros((10, 10))
-            y_test = np.zeros((10, 10))
+            clf = TabPFNClassifier(ignore_pretraining_limits=True)
             clf.fit(X_train, y_train)
             print("ack")
             predictions = clf.predict(X_test)
