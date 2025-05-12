@@ -18,7 +18,7 @@ import datetime
 import os
 
 
-from tabpfn import TabPFNClassifier
+# from tabpfn import TabPFNClassifier
 
 
 ONLY_SVC = False
@@ -166,7 +166,7 @@ def in_bool(main_list, key_list):
     return return_list
 
 
-def run_curr_experiment(exp_config, curr_exp_name):
+def preprocess_data_for_exp(exp_config, curr_exp_name):
     list_of_dfs = []
     for miluv_exp_name in exp_config[curr_exp_name]["datasets"]:
         print(miluv_exp_name)
@@ -247,6 +247,11 @@ def run_curr_experiment(exp_config, curr_exp_name):
             if preprocessing_method == "MinMaxScaler":
                 scaler = MinMaxScaler()
                 X_data = scaler.fit_transform(X_data)
+    return X_data, y_data
+
+
+def run_curr_experiment(exp_config, curr_exp_name):
+    X_data, y_data = preprocess_data_for_exp(exp_config=exp_config, curr_exp_name=curr_exp_name)
 
     X_train, X_test, y_train, y_test = train_test_split(
         X_data, y_data, test_size=0.2, random_state=0

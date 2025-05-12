@@ -10,6 +10,7 @@
 + [ ] run TabPFM on all
 + [ ] run with 100-feature and 500-feature clipping
 + [ ] group in triplets ?
++ [ ] write script that can extract the X_data and y_data given the config files
 
 ## Hotfix
 
