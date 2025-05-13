@@ -1,8 +1,10 @@
 # Tasks
 
+-> .md file that syncs with GitHub issues
+
 + [X] include the third dataset
 + [X] run on everything
-+ [ ] package all random vs all static
++ [X] package all random vs all static
 + [ ] add 15-degree angle
 + [X] use UWB ranging instead of ground truth metric
 + [ ] add correction code for static case only having 10 and no 11 for `from_id`
@@ -10,7 +12,12 @@
 + [ ] run TabPFM on all
 + [ ] run with 100-feature and 500-feature clipping
 + [ ] group in triplets ?
-+ [ ] write script that can extract the X_data and y_data given the config files
++ [X] write script that can extract the X_data and y_data given the config files
++ [ ] build package with uv
++ [ ] create new point entity that contains timestamp, acceleration, position,
+  nlos - this would allow for (1) angle checking and (2) visualizing point
+  errors
++ [ ] implement existing neural net approach
 
 ## Hotfix
 

@@ -21,6 +21,18 @@ import os
 # from tabpfn import TabPFNClassifier
 
 
+class CIRPoint:
+    def __init__(self):
+        self.x: float = None
+        self.y: float = None
+        self.z: float = None
+        self.acc: float = None
+        self.vel: float = None
+        self.is_nlos: bool = None
+        self.from_id: int = None
+        self.to_id: int = None
+
+
 ONLY_SVC = False
 VERBOSE = False
 
