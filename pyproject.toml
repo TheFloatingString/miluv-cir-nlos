@@ -11,4 +11,5 @@ dependencies = [
     "scikit-learn>=1.6.1",
     "pyyaml",
     "tabpfn>=2.0.9",
+    "ruff>=0.11.10",
 ]
