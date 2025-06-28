@@ -222,18 +222,19 @@ def process_ewine_dataset(exp_config, curr_exp_name):
         df = pd.read_csv(f"data/ewine/{ewine_exp_name}")
 
         print(df.head())
-        print(df.iloc[:,15:1031])
-        
+        print(df.iloc[:, 15:1031])
+
         list_of_cir = []
         for idx in tqdm.trange(df.shape[0]):
-            tmp = df.iloc[idx,15:1031].values
+            tmp = df.iloc[idx, 15:1031].values
             list_of_cir.append(str(tmp.tolist()))
-        
-        df = df.iloc[:,0:2]        
-        df['cir'] = list_of_cir
+
+        df = df.iloc[:, 0:2]
+        df["cir"] = list_of_cir
         list_of_dfs.append(df)
 
     return list_of_dfs
+
 
 def process_ewine_dataset_with_localization(exp_config, curr_exp_name):
     list_of_dfs = []
@@ -241,21 +242,21 @@ def process_ewine_dataset_with_localization(exp_config, curr_exp_name):
         df = pd.read_csv(f"data/ewine/{ewine_exp_name}")
 
         print(df.head())
-        print(df.iloc[:,15:1031])
-        
+        print(df.iloc[:, 15:1031])
+
         list_of_cir = []
         list_of_dist = []
         for idx in tqdm.trange(df.shape[0]):
-            tmp = df.iloc[idx,1039-1016:1039].values
+            tmp = df.iloc[idx, 1039 - 1016 : 1039].values
             list_of_cir.append(str(tmp.tolist()))
-            dx = df.iloc[idx,0]-df.iloc[idx,2]
-            dy = df.iloc[idx,1]-df.iloc[idx,3]
+            dx = df.iloc[idx, 0] - df.iloc[idx, 2]
+            dy = df.iloc[idx, 1] - df.iloc[idx, 3]
             dist = math.sqrt(dx**2 + dy**2)
             list_of_dist.append(dist)
-        
-        df = df.iloc[:,0:10]        
-        df['cir'] = list_of_cir
-        df["NLOS"] = df.iloc[:,5].values
+
+        df = df.iloc[:, 0:10]
+        df["cir"] = list_of_cir
+        df["NLOS"] = df.iloc[:, 5].values
         df["GT_DISTANCE"] = list_of_dist
         # df = df.dropna()
 
@@ -270,7 +271,7 @@ def preprocess_data_for_exp(exp_config, curr_exp_name):
         list_of_dfs = process_ewine_dataset(exp_config, curr_exp_name)
     elif exp_config[curr_exp_name]["data_source"] == "ewine-with-localization":
         list_of_dfs = process_ewine_dataset_with_localization(exp_config, curr_exp_name)
-    else: # default to miluv
+    else:  # default to miluv
         list_of_dfs = process_miluv_dataset(exp_config, curr_exp_name)
 
     df = pd.concat(list_of_dfs)
@@ -279,8 +280,11 @@ def preprocess_data_for_exp(exp_config, curr_exp_name):
 
     if exp_config[curr_exp_name]["orderedPreprocessing"] is not None:
         for preprocessing_method in exp_config[curr_exp_name]["orderedPreprocessing"]:
-            if exp_config[curr_exp_name]["data_source"] in ["ewine", "ewine-with-localization"]:
-                pass # TODO: skipping for now
+            if exp_config[curr_exp_name]["data_source"] in [
+                "ewine",
+                "ewine-with-localization",
+            ]:
+                pass  # TODO: skipping for now
             else:
                 if preprocessing_method == "filter_receiver_only_10":
                     df = filter_by_drone_receiver(df, receiver_id=10)
@@ -292,7 +296,10 @@ def preprocess_data_for_exp(exp_config, curr_exp_name):
     if exp_config[curr_exp_name].get("task") is None:
         raise ValueError("you must specify a task in the .yaml config file")
     elif exp_config[curr_exp_name]["task"] == "NLOS_binary":
-        if exp_config[curr_exp_name]["data_source"] in ["ewine", "ewine-with-localization"]:
+        if exp_config[curr_exp_name]["data_source"] in [
+            "ewine",
+            "ewine-with-localization",
+        ]:
             y_data = df.NLOS.values
         else:
             y_data = np.asarray([is_nlos(y) for y in df.to_id])
@@ -308,17 +315,20 @@ def preprocess_data_for_exp(exp_config, curr_exp_name):
             ):
                 if exp_config[curr_exp_name]["data_source"] == "ewine":
                     for idx in range(len(X_data)):
-                        X_data[idx] = (float(df.RANGE[idx]) **2 ) * X_data[idx]
-                if exp_config[curr_exp_name]["data_source"] == "ewine-with-localization":
+                        X_data[idx] = (float(df.RANGE[idx]) ** 2) * X_data[idx]
+                if (
+                    exp_config[curr_exp_name]["data_source"]
+                    == "ewine-with-localization"
+                ):
                     for idx in range(len(X_data)):
-                        X_data[idx] = (float(df.GT_DISTANCE[idx]) **2 ) * X_data[idx]
+                        X_data[idx] = (float(df.GT_DISTANCE[idx]) ** 2) * X_data[idx]
                 else:
                     print(df.dist_drone_to_uwb.values)
                     assert X_data.shape[0] == df["dist_drone_to_uwb"].values.shape[0]
                     for idx in range(len(X_data)):
-                        X_data[idx] = (df["dist_drone_to_uwb"].values[idx] ** 2) * X_data[
-                            idx
-                        ]
+                        X_data[idx] = (
+                            df["dist_drone_to_uwb"].values[idx] ** 2
+                        ) * X_data[idx]
                         if VERBOSE:
                             print(X_data[idx])
                             print()
