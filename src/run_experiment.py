@@ -183,7 +183,10 @@ def in_bool(main_list, key_list):
 def process_miluv_dataset(exp_config, curr_exp_name):
     list_of_dfs = []
     for miluv_exp_name in exp_config[curr_exp_name]["datasets"]:
+        print("--------------------------------")
+        print(f"data/{miluv_exp_name}")
         for dirname in os.listdir(f"data/{miluv_exp_name}"):
+            print(dirname)
             if "ifo" in dirname:  # TODO: not robust enough
                 df_tmp = pd.read_csv(f"data/{miluv_exp_name}/{dirname}/uwb_cir.csv")
                 df_tmp = df_tmp[
@@ -200,6 +203,7 @@ def process_miluv_dataset(exp_config, curr_exp_name):
                         df_uwb_cir=df_tmp, df_dist=df_dist
                     )
                     print(df_tmp["dist_drone_to_uwb"].values)
+                    list_of_dfs.append(df_tmp)
                 if (
                     "ranging_scaling"
                     in exp_config[curr_exp_name]["orderedPreprocessing"]
@@ -212,6 +216,8 @@ def process_miluv_dataset(exp_config, curr_exp_name):
                         df_uwb_cir=df_tmp, df_ranging=df_ranging
                     )
                     print(df_tmp["dist_drone_to_uwb"].values)
+                    list_of_dfs.append(df_tmp)
+                else:
                     list_of_dfs.append(df_tmp)
     return list_of_dfs
 
@@ -315,20 +321,30 @@ def preprocess_data_for_exp(exp_config, curr_exp_name):
             ):
                 if exp_config[curr_exp_name]["data_source"] == "ewine":
                     for idx in range(len(X_data)):
-                        X_data[idx] = (float(df.RANGE[idx]) ** 2) * X_data[idx]
+                        if "add_noise_to_ground_truth_distance" in exp_config[curr_exp_name]["orderedPreprocessing"]:
+                            distance = float(df.RANGE[idx]) + np.random.normal(0, 0.5)
+                        else:
+                            distance = float(df.RANGE[idx])
+                        X_data[idx] = (distance ** 2) * X_data[idx]
                 if (
                     exp_config[curr_exp_name]["data_source"]
                     == "ewine-with-localization"
                 ):
                     for idx in range(len(X_data)):
-                        X_data[idx] = (float(df.GT_DISTANCE[idx]) ** 2) * X_data[idx]
+                        if "add_noise_to_ground_truth_distance" in exp_config[curr_exp_name]["orderedPreprocessing"]:
+                            distance = float(df.GT_DISTANCE[idx]) + np.random.normal(0, 0.5)
+                        else:
+                            distance = float(df.GT_DISTANCE[idx])
+                        X_data[idx] = (distance ** 2) * X_data[idx]
                 else:
                     print(df.dist_drone_to_uwb.values)
                     assert X_data.shape[0] == df["dist_drone_to_uwb"].values.shape[0]
                     for idx in range(len(X_data)):
-                        X_data[idx] = (
-                            df["dist_drone_to_uwb"].values[idx] ** 2
-                        ) * X_data[idx]
+                        if "add_noise_to_ground_truth_distance" in exp_config[curr_exp_name]["orderedPreprocessing"]:
+                            distance = float(df["dist_drone_to_uwb"].values[idx]) + np.random.normal(0, 0.5)
+                        else:
+                            distance = float(df["dist_drone_to_uwb"].values[idx])
+                        X_data[idx] = (distance ** 2) * X_data[idx]
                         if VERBOSE:
                             print(X_data[idx])
                             print()
