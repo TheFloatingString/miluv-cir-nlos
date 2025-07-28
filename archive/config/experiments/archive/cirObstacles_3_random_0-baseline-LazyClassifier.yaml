@@ -1,0 +1,8 @@
+experiment:
+  name: "cirObstacles_3_random_0-baseline-LazyClassifier"
+  datasets:
+    - "cirObstacles_3_random_0"
+  orderedPreprocessing:
+    - "sklearn_normalize"
+  classifier: "LazyClassifier"
+  task: "NLOS_binary"

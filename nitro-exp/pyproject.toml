@@ -1,0 +1,18 @@
+[project]
+name = "nitro-exp"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+    "nitro",
+    "tqdm>=4.67.1",
+]
+
+[tool.uv.workspace]
+members = [
+    "local",
+]
+
+[tool.uv.sources]
+nitro = { git = "https://github.com/TheFloatingString/nitro-for-ml.git" }

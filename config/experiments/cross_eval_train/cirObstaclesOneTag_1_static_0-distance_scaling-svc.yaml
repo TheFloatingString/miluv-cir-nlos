@@ -1,9 +1,0 @@
-experiment-3:
-  name: "random_only-distance_scaling-exp_3-LazyClassifier"
-  datasets:
-    - "cirObstaclesOneTag_1_static_0"
-  orderedPreprocessing:
-    - "distance_scaling"
-    - "MinMaxScaler"
-  classifier: "SVC"
-  task: "NLOS_binary"

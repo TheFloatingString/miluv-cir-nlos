@@ -1,1 +1,0 @@
-uv run python -m src.run_baseline 1_drone_random_with_obstacles time_domain

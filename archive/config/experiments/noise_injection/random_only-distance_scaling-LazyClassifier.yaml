@@ -1,0 +1,74 @@
+experiment-1:
+  name: "random_only-distance_scaling-exp_1-LazyClassifier"
+  datasets:
+    - "cirObstacles_1_random3_0"
+    - "cirObstacles_3_random_0"
+  orderedPreprocessing:
+    - "add_noise_to_ground_truth_distance"
+  classifier: "LazyClassifier"
+  task: "NLOS_binary"
+  data_source: "miluv"
+
+experiment-2:
+  name: "random_only-distance_scaling-exp_2-LazyClassifier"
+  datasets:
+    - "cirObstacles_1_random3_0"
+    - "cirObstacles_3_random_0"
+  orderedPreprocessing:
+    - "add_noise_to_ground_truth_distance"
+    - "MinMaxScaler"
+  classifier: "LazyClassifier"
+  task: "NLOS_binary"
+  data_source: "miluv"
+
+experiment-3:
+  name: "random_only-distance_scaling-exp_3-LazyClassifier"
+  datasets:
+    - "cirObstacles_1_random3_0"
+    - "cirObstacles_3_random_0"
+  orderedPreprocessing:
+    - "distance_scaling"
+    - "add_noise_to_ground_truth_distance"
+    - "MinMaxScaler"
+  classifier: "LazyClassifier"
+  task: "NLOS_binary"
+  data_source: "miluv"
+
+experiment-4:
+  name: "random_only-distance_scaling-exp_4-LazyClassifier"
+  datasets:
+    - "cirObstacles_1_random3_0"
+    - "cirObstacles_3_random_0"
+  orderedPreprocessing:
+    - "distance_scaling"
+    - "MinMaxScaler"
+    - "fft"
+    - "add_noise_to_ground_truth_distance"
+  classifier: "LazyClassifier"
+  task: "NLOS_binary"
+  data_source: "miluv"
+
+experiment-5:
+  name: "random_only-distance_scaling-exp_5-LazyClassifier"
+  datasets:
+    - "cirObstacles_1_random3_0"
+    - "cirObstacles_3_random_0"
+  orderedPreprocessing:
+    - "MinMaxScaler"
+    - "fft"
+    - "add_noise_to_ground_truth_distance"
+  classifier: "LazyClassifier"
+  task: "NLOS_binary"
+  data_source: "miluv"
+
+experiment-6:
+  name: "random_only-distance_scaling-exp_6-LazyClassifier"
+  datasets:
+    - "cirObstacles_1_random3_0"
+    - "cirObstacles_3_random_0"
+  orderedPreprocessing:
+    - "distance_scaling"
+    - "add_noise_to_ground_truth_distance"
+  classifier: "LazyClassifier"
+  task: "NLOS_binary"
+  data_source: "miluv"

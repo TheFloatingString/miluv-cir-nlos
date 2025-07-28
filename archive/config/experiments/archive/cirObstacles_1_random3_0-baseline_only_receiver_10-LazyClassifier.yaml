@@ -1,0 +1,9 @@
+experiment:
+  name: "cirObstacles_1_random3_0-baseline_only_receiver_10-LazyClassifier"
+  datasets:
+    - "cirObstacles_1_random3_0"
+  orderedPreprocessing:
+    - "filter_receiver_only_10"
+    - "sklearn_normalize"
+  classifier: "LazyClassifier"
+  task: "NLOS_binary"

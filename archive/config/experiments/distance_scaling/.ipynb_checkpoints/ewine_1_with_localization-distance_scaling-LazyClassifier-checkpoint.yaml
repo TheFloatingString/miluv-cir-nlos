@@ -1,0 +1,63 @@
+experiment-1:
+  name: "cirObstacles_1_random3_0-distance_scaling-exp_1-LazyClassifier"
+  data_source: "ewine-with-localization"
+  datasets:
+    - "tag_room0.csv"
+  orderedPreprocessing:
+    - "skip"
+  classifier: "LazyClassifier"
+  task: "NLOS_binary"
+
+experiment-2:
+  name: "cirObstacles_1_random3_0-distance_scaling-exp_2-LazyClassifier"
+  data_source: "ewine-with-localization"
+  datasets:
+    - "tag_room0.csv"
+  orderedPreprocessing:
+    - "MinMaxScaler"
+  classifier: "LazyClassifier"
+  task: "NLOS_binary"
+
+experiment-3:
+  name: "cirObstacles_1_random3_0-distance_scaling-exp_3-LazyClassifier"
+  data_source: "ewine-with-localization"
+  datasets:
+    - "tag_room0.csv"
+  orderedPreprocessing:
+    - "distance_scaling"
+    - "MinMaxScaler"
+  classifier: "LazyClassifier"
+  task: "NLOS_binary"
+
+experiment-4:
+  name: "cirObstacles_1_random3_0-distance_scaling-exp_4-LazyClassifier"
+  data_source: "ewine-with-localization"
+  datasets:
+    - "tag_room0.csv"
+  orderedPreprocessing:
+    - "distance_scaling"
+    - "fft"
+    - "MinMaxScaler"
+  classifier: "LazyClassifier"
+  task: "NLOS_binary"
+
+experiment-5:
+  name: "cirObstacles_1_random3_0-distance_scaling-exp_5-LazyClassifier"
+  data_source: "ewine-with-localization"
+  datasets:
+    - "tag_room0.csv"
+  orderedPreprocessing:
+    - "fft"
+    - "MinMaxScaler"
+  classifier: "LazyClassifier"
+  task: "NLOS_binary"
+
+experiment-6:
+  name: "cirObstacles_1_random3_0-distance_scaling-exp_6-LazyClassifier"
+  data_source: "ewine-with-localization"
+  datasets:
+    - "tag_room0.csv"
+  orderedPreprocessing:
+    - "distance_scaling"
+  classifier: "LazyClassifier"
+  task: "NLOS_binary"

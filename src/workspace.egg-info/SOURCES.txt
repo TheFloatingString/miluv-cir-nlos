@@ -1,9 +1,0 @@
-README.md
-pyproject.toml
-src/run_baseline.py
-src/run_experiment.py
-src/workspace.egg-info/PKG-INFO
-src/workspace.egg-info/SOURCES.txt
-src/workspace.egg-info/dependency_links.txt
-src/workspace.egg-info/requires.txt
-src/workspace.egg-info/top_level.txt
