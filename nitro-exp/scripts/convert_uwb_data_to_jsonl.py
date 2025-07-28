@@ -28,6 +28,13 @@ def get_mocap_distance(df_mocap: pd.DataFrame, timestamp: float, tag_id):
 
     return distance
 
+def get_ranging_distance(df_ranging: pd.DataFrame, timestamp: float, from_id: int, to_id: int):
+    # TODO: why only 10 and not 11 for from_id ?
+    df_ranging_filtered = df_ranging[df_ranging["to_id"] == to_id]
+    ranging_row = df_ranging_filtered.loc[abs(df_ranging_filtered["timestamp"] - timestamp).idxmin()]
+    distance = ranging_row["range"]
+    return distance
+
 
 def is_nlos_for_static_case(to_id):
     if to_id in [1, 3, 4]:
@@ -36,15 +43,21 @@ def is_nlos_for_static_case(to_id):
         return False
 
 
-def create_uwb_row(df_cir: pd.DataFrame, df_mocap: pd.DataFrame, df_cir_idx: int):
+def create_uwb_row(df_cir: pd.DataFrame, df_mocap: pd.DataFrame, df_ranging: pd.DataFrame, df_cir_idx: int):
     timestamp = df_cir.iloc[df_cir_idx]["timestamp"]
     tag_id = df_cir.iloc[df_cir_idx]["to_id"]
+
+
+    from_id = df_cir.iloc[df_cir_idx]["from_id"]
+    to_id = df_cir.iloc[df_cir_idx]["to_id"]
+
     return_row = {
         "timestamp": timestamp,
         "my_id": int(df_cir.iloc[df_cir_idx]["my_id"]),
         "from_id": int(df_cir.iloc[df_cir_idx]["from_id"]),
         "to_id": int(df_cir.iloc[df_cir_idx]["to_id"]),
         "mocap_distance": float(get_mocap_distance(df_mocap, timestamp, tag_id)),
+        "ranging_distance": float(get_ranging_distance(df_ranging, timestamp, from_id, to_id)),
         "is_nlos": is_nlos_for_static_case(df_cir.iloc[df_cir_idx]["to_id"]),
         "cir": eval(df_cir.iloc[df_cir_idx]["cir"]),
     }
@@ -52,14 +65,15 @@ def create_uwb_row(df_cir: pd.DataFrame, df_mocap: pd.DataFrame, df_cir_idx: int
 
 
 def convert_uwb_data_to_jsonl(
-    uwb_data_path: str, mocap_data_path: str
+    uwb_data_path: str, mocap_data_path: str, ranging_data_path: str
 ):
     df_cir = pd.read_csv(uwb_data_path)
     df_mocap = pd.read_csv(mocap_data_path)
+    df_ranging = pd.read_csv(ranging_data_path)
 
     list_of_final_rows = []
     for index, row in tqdm.tqdm(df_cir.iterrows()):
-        parsed_row = create_uwb_row(df_cir, df_mocap, index)
+        parsed_row = create_uwb_row(df_cir, df_mocap, df_ranging, index)
         list_of_final_rows.append(parsed_row)
 
     return list_of_final_rows
@@ -69,6 +83,7 @@ if __name__ == "__main__":
     list_of_formatted_rows = convert_uwb_data_to_jsonl(
         "data/source_data/cirObstaclesOneTag_1_static_0/ifo001/uwb_cir.csv",
         "data/source_data/cirObstaclesOneTag_1_static_0/ifo001/mocap.csv",
+        "data/source_data/cirObstaclesOneTag_1_static_0/ifo001/uwb_range.csv"
     )
 
     for target_id in [0,1,2,3,4,5]:

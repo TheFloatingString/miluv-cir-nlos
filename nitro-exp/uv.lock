@@ -582,7 +582,7 @@ wheels = [
 [[package]]
 name = "nitro"
 version = "0.1"
-source = { git = "https://github.com/TheFloatingString/nitro-for-ml.git?rev=f0b7cc4#f0b7cc446001e777bec644619f1273b6625aa6fe" }
+source = { git = "https://github.com/TheFloatingString/nitro-for-ml.git?rev=f34d754#f34d75476ef7840457ef5d758fa08f561d34554c" }
 dependencies = [
     { name = "click" },
     { name = "datasets" },
@@ -605,7 +605,7 @@ dependencies = [
 
 [package.metadata]
 requires-dist = [
-    { name = "nitro", git = "https://github.com/TheFloatingString/nitro-for-ml.git?rev=f0b7cc4" },
+    { name = "nitro", git = "https://github.com/TheFloatingString/nitro-for-ml.git?rev=f34d754" },
     { name = "tqdm", specifier = ">=4.67.1" },
 ]
 
