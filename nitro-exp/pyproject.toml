@@ -15,4 +15,4 @@ members = [
 ]
 
 [tool.uv.sources]
-nitro = { git = "https://github.com/TheFloatingString/nitro-for-ml.git" }
+nitro = { git = "https://github.com/TheFloatingString/nitro-for-ml.git" , rev = "f0b7cc4" }

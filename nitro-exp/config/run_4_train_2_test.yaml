@@ -1,0 +1,22 @@
+run_4_train_2_test_milu_static_1:
+  datasets:
+    X_train:
+      - data/processed_data/X_data_static_1_target_0.jsonl
+      - data/processed_data/X_data_static_1_target_1.jsonl
+      - data/processed_data/X_data_static_1_target_2.jsonl
+      - data/processed_data/X_data_static_1_target_3.jsonl
+    y_train:
+      - data/processed_data/y_data_static_1_target_0.jsonl
+      - data/processed_data/y_data_static_1_target_1.jsonl
+      - data/processed_data/y_data_static_1_target_2.jsonl
+      - data/processed_data/y_data_static_1_target_3.jsonl
+    X_test:
+      - data/processed_data/X_data_static_1_target_4.jsonl
+      - data/processed_data/X_data_static_1_target_5.jsonl
+    y_test:
+      - data/processed_data/y_data_static_1_target_4.jsonl
+      - data/processed_data/y_data_static_1_target_5.jsonl
+  preprocessing:
+    - "local.GetCirOnly"
+  classifier: "sklearn.svm.SVC"
+  scorer: "accuracy"

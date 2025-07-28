@@ -52,7 +52,7 @@ def create_uwb_row(df_cir: pd.DataFrame, df_mocap: pd.DataFrame, df_cir_idx: int
 
 
 def convert_uwb_data_to_jsonl(
-    uwb_data_path: str, mocap_data_path: str, output_path: str
+    uwb_data_path: str, mocap_data_path: str
 ):
     df_cir = pd.read_csv(uwb_data_path)
     df_mocap = pd.read_csv(mocap_data_path)
@@ -62,14 +62,25 @@ def convert_uwb_data_to_jsonl(
         parsed_row = create_uwb_row(df_cir, df_mocap, index)
         list_of_final_rows.append(parsed_row)
 
-    with open(output_path, "w") as f:
-        for row in list_of_final_rows:
-            f.write(json.dumps(row) + "\n")
+    return list_of_final_rows
 
 
 if __name__ == "__main__":
-    convert_uwb_data_to_jsonl(
+    list_of_formatted_rows = convert_uwb_data_to_jsonl(
         "data/source_data/cirObstaclesOneTag_1_static_0/ifo001/uwb_cir.csv",
         "data/source_data/cirObstaclesOneTag_1_static_0/ifo001/mocap.csv",
-        "uwb_data.jsonl",
     )
+
+    for target_id in [0,1,2,3,4,5]:
+        with open(f"data/processed_data/X_data_static_1_target_{target_id}.jsonl", "w") as f:
+            for row in tqdm.tqdm(list_of_formatted_rows):
+                if row["to_id"] == target_id:
+                    f.write(json.dumps(row) + "\n")
+
+    bool_to_int = {True: 1, False: 0}
+
+    for target_id in [0,1,2,3,4,5]:
+        with open(f"data/processed_data/y_data_static_1_target_{target_id}.jsonl", "w") as f:
+            for row in tqdm.tqdm(list_of_formatted_rows):
+                if row["to_id"] == target_id:
+                    f.write(json.dumps(bool_to_int[row["is_nlos"]]) + "\n")
