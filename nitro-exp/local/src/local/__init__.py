@@ -2,14 +2,12 @@ from rich import print as rprint
 import numpy as np
 
 
-
-class GetCirOnly():
+class GetCirOnly:
     def __init__(self):
         pass
 
-    def get_cir_only(self,row: dict) -> list:
+    def get_cir_only(self, row: dict) -> list:
         return np.asarray(row["cir"])
-
 
     def fit(self, X: list) -> None:
         # print("Fitting")
@@ -23,12 +21,13 @@ class GetCirOnly():
         # rprint(X)
         return [self.get_cir_only(row) for row in X]
 
-class MocapDistanceScaling():
+
+class MocapDistanceScaling:
     def __init__(self):
         pass
 
-    def get_mocap_distance(self,row: dict) -> float:
-        return np.asarray(row["cir"])*(row["mocap_distance"]**2)
+    def get_mocap_distance(self, row: dict) -> float:
+        return np.asarray(row["cir"]) * (row["mocap_distance"] ** 2)
 
     def fit(self, X: list) -> None:
         pass
@@ -40,12 +39,12 @@ class MocapDistanceScaling():
         return self.transform(X)
 
 
-class RangingDistanceScaling():
+class RangingDistanceScaling:
     def __init__(self):
         pass
 
-    def get_ranging_distance(self,row: dict) -> float:
-        return np.asarray(row["cir"])*(row["ranging_distance"]**2)
+    def get_ranging_distance(self, row: dict) -> float:
+        return np.asarray(row["cir"]) * (row["ranging_distance"] ** 2)
 
     def fit(self, X: list) -> None:
         pass
@@ -55,3 +54,37 @@ class RangingDistanceScaling():
 
     def fit_transform(self, X: list) -> list:
         return self.transform(X)
+
+
+class FppPreprocess:
+    def __init__(self):
+        pass
+
+    def fit(self, X: list) -> None:
+        pass
+
+    def transform(self, X: list) -> list:
+        return [self.get_fpp(row) for row in X]
+
+    def fit_transform(self, X: list) -> list:
+        return self.transform(X)
+
+    def get_fpp(self, row: dict) -> list:
+        return np.multiply(row["cir"], row["fpp1"] ** 2)
+
+
+class FppAndRangeDist:
+    def __init__(self):
+        pass
+
+    def fit(self, X: list) -> None:
+        pass
+
+    def transform(self, X: list) -> list:
+        return [self.get_fpp_and_range_dist(row) for row in X]
+
+    def fit_transform(self, X: list) -> list:
+        return self.transform(X)
+
+    def get_fpp_and_range_dist(self, row: dict) -> list:
+        return np.asarray([row["fpp1"], row["ranging_distance"]])

@@ -1,27 +1,319 @@
-run_4_train_2_test_milu_static_1-cir_only:
+# run_4_train_2_test_milu_static_1-cir_only:
+#   datasets:
+#     X_train:
+#       - data/processed_data/X_data_static_1_target_0.jsonl
+#       - data/processed_data/X_data_static_1_target_1.jsonl
+#       - data/processed_data/X_data_static_1_target_2.jsonl
+#       - data/processed_data/X_data_static_1_target_3.jsonl
+#     y_train:
+#       - data/processed_data/y_data_static_1_target_0.jsonl
+#       - data/processed_data/y_data_static_1_target_1.jsonl
+#       - data/processed_data/y_data_static_1_target_2.jsonl
+#       - data/processed_data/y_data_static_1_target_3.jsonl
+#     X_test:
+#       - data/processed_data/X_data_static_1_target_4.jsonl
+#       - data/processed_data/X_data_static_1_target_5.jsonl
+#     y_test:
+#       - data/processed_data/y_data_static_1_target_4.jsonl
+#       - data/processed_data/y_data_static_1_target_5.jsonl
+#   preprocessing:
+#     - "local.GetCirOnly"
+#   classifier: "sklearn.svm.SVC"
+#   scorer: "accuracy"
+# ---
+# run_4_train_2_test_milu_static_1-mocap_distance:
+#   datasets:
+#     X_train:
+#       - data/processed_data/X_data_static_1_target_0.jsonl
+#       - data/processed_data/X_data_static_1_target_1.jsonl
+#       - data/processed_data/X_data_static_1_target_2.jsonl
+#       - data/processed_data/X_data_static_1_target_3.jsonl
+#     y_train:
+#       - data/processed_data/y_data_static_1_target_0.jsonl
+#       - data/processed_data/y_data_static_1_target_1.jsonl
+#       - data/processed_data/y_data_static_1_target_2.jsonl
+#       - data/processed_data/y_data_static_1_target_3.jsonl
+#     X_test:
+#       - data/processed_data/X_data_static_1_target_4.jsonl
+#       - data/processed_data/X_data_static_1_target_5.jsonl
+#     y_test:
+#       - data/processed_data/y_data_static_1_target_4.jsonl
+#       - data/processed_data/y_data_static_1_target_5.jsonl
+#   preprocessing:
+#     - "local.MocapDistanceScaling"
+#   classifier: "sklearn.svm.SVC"
+#   scorer: "accuracy"
+# ---
+# run_4_train_2_test_milu_static_1-ranging_distance:
+#   datasets:
+#     X_train:
+#       - data/processed_data/X_data_static_1_target_0.jsonl
+#       - data/processed_data/X_data_static_1_target_1.jsonl
+#       - data/processed_data/X_data_static_1_target_2.jsonl
+#       - data/processed_data/X_data_static_1_target_3.jsonl
+#     y_train:
+#       - data/processed_data/y_data_static_1_target_0.jsonl
+#       - data/processed_data/y_data_static_1_target_1.jsonl
+#       - data/processed_data/y_data_static_1_target_2.jsonl
+#       - data/processed_data/y_data_static_1_target_3.jsonl
+#     X_test:
+#       - data/processed_data/X_data_static_1_target_4.jsonl
+#       - data/processed_data/X_data_static_1_target_5.jsonl
+#     y_test:
+#       - data/processed_data/y_data_static_1_target_4.jsonl
+#       - data/processed_data/y_data_static_1_target_5.jsonl
+#   preprocessing:
+#     - "local.RangingDistanceScaling"
+#   classifier: "sklearn.svm.SVC"
+#   scorer: "accuracy"
+# ---
+# run_4_train_2_test_milu_random_1-cir_only:
+#   datasets:
+#     X_train:
+#       - data/processed_data/X_data_random_1_target_0.jsonl
+#       - data/processed_data/X_data_random_1_target_1.jsonl
+#       - data/processed_data/X_data_random_1_target_2.jsonl
+#       - data/processed_data/X_data_random_1_target_3.jsonl
+#     y_train:
+#       - data/processed_data/y_data_random_1_target_0.jsonl
+#       - data/processed_data/y_data_random_1_target_1.jsonl
+#       - data/processed_data/y_data_random_1_target_2.jsonl
+#       - data/processed_data/y_data_random_1_target_3.jsonl
+#     X_test:
+#       - data/processed_data/X_data_random_1_target_4.jsonl
+#       - data/processed_data/X_data_random_1_target_5.jsonl
+#     y_test:
+#       - data/processed_data/y_data_random_1_target_4.jsonl
+#       - data/processed_data/y_data_random_1_target_5.jsonl
+#   preprocessing:
+#     - "local.GetCirOnly"
+#   classifier: "sklearn.svm.SVC"
+#   scorer: "accuracy"
+
+# ---
+# run_4_train_2_test_milu_random_1-mocap_distance:
+#   datasets:
+#     X_train:
+#       - data/processed_data/X_data_random_1_target_0.jsonl
+#       - data/processed_data/X_data_random_1_target_1.jsonl
+#       - data/processed_data/X_data_random_1_target_2.jsonl
+#       - data/processed_data/X_data_random_1_target_3.jsonl
+#     y_train:
+#       - data/processed_data/y_data_random_1_target_0.jsonl
+#       - data/processed_data/y_data_random_1_target_1.jsonl
+#       - data/processed_data/y_data_random_1_target_2.jsonl
+#       - data/processed_data/y_data_random_1_target_3.jsonl
+#     X_test:
+#       - data/processed_data/X_data_random_1_target_4.jsonl
+#       - data/processed_data/X_data_random_1_target_5.jsonl
+#     y_test:
+#       - data/processed_data/y_data_random_1_target_4.jsonl
+#       - data/processed_data/y_data_random_1_target_5.jsonl
+#   preprocessing:
+#     - "local.MocapDistanceScaling"
+#   classifier: "sklearn.svm.SVC"
+#   scorer: "accuracy"
+# ---
+# run_4_train_2_test_milu_random_1-ranging_distance:
+#   datasets:
+#     X_train:
+#       - data/processed_data/X_data_random_1_target_0.jsonl
+#       - data/processed_data/X_data_random_1_target_1.jsonl
+#       - data/processed_data/X_data_random_1_target_2.jsonl
+#       - data/processed_data/X_data_random_1_target_3.jsonl
+#     y_train:
+#       - data/processed_data/y_data_random_1_target_0.jsonl
+#       - data/processed_data/y_data_random_1_target_1.jsonl
+#       - data/processed_data/y_data_random_1_target_2.jsonl
+#       - data/processed_data/y_data_random_1_target_3.jsonl
+#     X_test:
+#       - data/processed_data/X_data_random_1_target_4.jsonl
+#       - data/processed_data/X_data_random_1_target_5.jsonl
+#     y_test:
+#       - data/processed_data/y_data_random_1_target_4.jsonl
+#       - data/processed_data/y_data_random_1_target_5.jsonl
+#   preprocessing:
+#     - "local.RangingDistanceScaling"
+#   classifier: "sklearn.svm.SVC"
+#   scorer: "accuracy"
+# ---
+# ewine_to_miluv-ranging_distance:
+#   datasets:
+#     X_train:
+#       - data/processed_data/X_data_ewine.jsonl
+#     y_train:
+#       - data/processed_data/y_data_ewine.jsonl
+#     X_test:
+#       - data/processed_data/X_data_random_1_target_4.jsonl
+#       - data/processed_data/X_data_random_1_target_5.jsonl
+#     y_test:
+#       - data/processed_data/y_data_random_1_target_4.jsonl
+#       - data/processed_data/y_data_random_1_target_5.jsonl
+#   preprocessing:
+#     - "local.RangingDistanceScaling"
+#     - "sklearn.preprocessing.StandardScaler"
+#   classifier: "sklearn.svm.SVC"
+#   scorer: "accuracy"
+# ---
+# miluv_to_ewine-ranging_distance:
+#   datasets:
+#     X_train:
+#       - data/processed_data/X_data_random_1_target_0.jsonl
+#       - data/processed_data/X_data_random_1_target_1.jsonl
+#       - data/processed_data/X_data_random_1_target_2.jsonl
+#       - data/processed_data/X_data_random_1_target_3.jsonl
+#     y_train:
+#       - data/processed_data/y_data_random_1_target_0.jsonl
+#       - data/processed_data/y_data_random_1_target_1.jsonl
+#       - data/processed_data/y_data_random_1_target_2.jsonl
+#       - data/processed_data/y_data_random_1_target_3.jsonl
+#     X_test:
+#       - data/processed_data/X_data_ewine.jsonl
+#     y_test:
+#       - data/processed_data/y_data_ewine.jsonl
+#   preprocessing:
+#     - "local.RangingDistanceScaling"
+#     - "sklearn.preprocessing.StandardScaler"
+#   classifier: "sklearn.svm.SVC"
+#   scorer: "accuracy"
+# ---
+# miluv_to_ewine_for_localization-mocap_distance:
+#   datasets:
+#     X_train:
+#       - data/processed_data/X_data_random_1_target_0.jsonl
+#       - data/processed_data/X_data_random_1_target_1.jsonl
+#       - data/processed_data/X_data_random_1_target_2.jsonl
+#       - data/processed_data/X_data_random_1_target_3.jsonl
+#     y_train:
+#       - data/processed_data/y_data_random_1_target_0.jsonl
+#       - data/processed_data/y_data_random_1_target_1.jsonl
+#       - data/processed_data/y_data_random_1_target_2.jsonl
+#       - data/processed_data/y_data_random_1_target_3.jsonl
+#     X_test:
+#       - data/processed_data/X_data_ewine_localization.jsonl
+#     y_test:
+#       - data/processed_data/y_data_ewine_localization.jsonl
+#   preprocessing:
+#     - "local.MocapDistanceScaling"
+#     - "sklearn.preprocessing.StandardScaler"
+#   classifier: "sklearn.svm.SVC"
+#   scorer: "accuracy"
+# ---
+# miluv_to_ewine_for_localization-ranging_distance:
+#   datasets:
+#     X_train:
+#       - data/processed_data/X_data_random_1_target_0.jsonl
+#       - data/processed_data/X_data_random_1_target_1.jsonl
+#       - data/processed_data/X_data_random_1_target_2.jsonl
+#       - data/processed_data/X_data_random_1_target_3.jsonl
+#     y_train:
+#       - data/processed_data/y_data_random_1_target_0.jsonl
+#       - data/processed_data/y_data_random_1_target_1.jsonl
+#       - data/processed_data/y_data_random_1_target_2.jsonl
+#       - data/processed_data/y_data_random_1_target_3.jsonl
+#     X_test:
+#       - data/processed_data/X_data_ewine_localization.jsonl
+#     y_test:
+#       - data/processed_data/y_data_ewine_localization.jsonl
+#   preprocessing:
+#     - "local.RangingDistanceScaling"
+#     - "sklearn.preprocessing.StandardScaler"
+#   classifier: "sklearn.svm.SVC"
+#   scorer: "accuracy"
+# ---
+# run_4_train_2_test_milu_static_1-with_fpp:
+#   datasets:
+#     X_train:
+#       - data/processed_data/X_data_static_1_target_0.jsonl
+#       - data/processed_data/X_data_static_1_target_1.jsonl
+#       - data/processed_data/X_data_static_1_target_2.jsonl
+#       - data/processed_data/X_data_static_1_target_3.jsonl
+#     y_train:
+#       - data/processed_data/y_data_static_1_target_0.jsonl
+#       - data/processed_data/y_data_static_1_target_1.jsonl
+#       - data/processed_data/y_data_static_1_target_2.jsonl
+#       - data/processed_data/y_data_static_1_target_3.jsonl
+#     X_test:
+#       - data/processed_data/X_data_static_1_target_4.jsonl
+#       - data/processed_data/X_data_static_1_target_5.jsonl
+#     y_test:
+#       - data/processed_data/y_data_static_1_target_4.jsonl
+#       - data/processed_data/y_data_static_1_target_5.jsonl
+#   preprocessing:
+#     - "local.FppPreprocess"
+#   classifier: "sklearn.svm.SVC"
+#   scorer: "accuracy"
+# ---
+# run_4_train_2_test_milu_static_1-with_fpp_random_forest:
+#   datasets:
+#     X_train:
+#       - data/processed_data/X_data_static_1_target_0.jsonl
+#       - data/processed_data/X_data_static_1_target_1.jsonl
+#       - data/processed_data/X_data_static_1_target_2.jsonl
+#       - data/processed_data/X_data_static_1_target_3.jsonl
+#     y_train:
+#       - data/processed_data/y_data_static_1_target_0.jsonl
+#       - data/processed_data/y_data_static_1_target_1.jsonl
+#       - data/processed_data/y_data_static_1_target_2.jsonl
+#       - data/processed_data/y_data_static_1_target_3.jsonl
+#     X_test:
+#       - data/processed_data/X_data_static_1_target_4.jsonl
+#       - data/processed_data/X_data_static_1_target_5.jsonl
+#     y_test:
+#       - data/processed_data/y_data_static_1_target_4.jsonl
+#       - data/processed_data/y_data_static_1_target_5.jsonl
+#   preprocessing:
+#     - "local.FppPreprocess"
+#   classifier: "sklearn.ensemble.RandomForestClassifier"
+#   scorer: "accuracy"
+# ---
+# run_4_train_2_test_miluv_random_1-with_fpp:
+#   datasets:
+#     X_train:
+#       - data/processed_data/X_data_random_1_target_0.jsonl
+#       - data/processed_data/X_data_random_1_target_1.jsonl
+#       - data/processed_data/X_data_random_1_target_2.jsonl
+#       - data/processed_data/X_data_random_1_target_3.jsonl
+#     y_train:
+#       - data/processed_data/y_data_random_1_target_0.jsonl
+#       - data/processed_data/y_data_random_1_target_1.jsonl
+#       - data/processed_data/y_data_random_1_target_2.jsonl
+#       - data/processed_data/y_data_random_1_target_3.jsonl
+#     X_test:
+#       - data/processed_data/X_data_random_1_target_4.jsonl
+#       - data/processed_data/X_data_random_1_target_5.jsonl
+#     y_test:
+#       - data/processed_data/y_data_random_1_target_4.jsonl
+#       - data/processed_data/y_data_random_1_target_5.jsonl
+#   preprocessing:
+#     - "local.FppPreprocess"
+#   classifier: "sklearn.svm.SVC"
+#   scorer: "accuracy"
+# ---
+run_4_train_2_test_miluv_random_1-fpp_and_ranging_only:
   datasets:
     X_train:
-      - data/processed_data/X_data_static_1_target_0.jsonl
-      - data/processed_data/X_data_static_1_target_1.jsonl
-      - data/processed_data/X_data_static_1_target_2.jsonl
-      - data/processed_data/X_data_static_1_target_3.jsonl
+      - data/processed_data/X_data_random_1_target_0.jsonl
+      - data/processed_data/X_data_random_1_target_1.jsonl
+      - data/processed_data/X_data_random_1_target_2.jsonl
+      - data/processed_data/X_data_random_1_target_3.jsonl
     y_train:
-      - data/processed_data/y_data_static_1_target_0.jsonl
-      - data/processed_data/y_data_static_1_target_1.jsonl
-      - data/processed_data/y_data_static_1_target_2.jsonl
-      - data/processed_data/y_data_static_1_target_3.jsonl
+      - data/processed_data/y_data_random_1_target_0.jsonl
+      - data/processed_data/y_data_random_1_target_1.jsonl
+      - data/processed_data/y_data_random_1_target_2.jsonl
+      - data/processed_data/y_data_random_1_target_3.jsonl
     X_test:
-      - data/processed_data/X_data_static_1_target_4.jsonl
-      - data/processed_data/X_data_static_1_target_5.jsonl
+      - data/processed_data/X_data_random_1_target_4.jsonl
+      - data/processed_data/X_data_random_1_target_5.jsonl
     y_test:
-      - data/processed_data/y_data_static_1_target_4.jsonl
-      - data/processed_data/y_data_static_1_target_5.jsonl
+      - data/processed_data/y_data_random_1_target_4.jsonl
+      - data/processed_data/y_data_random_1_target_5.jsonl
   preprocessing:
-    - "local.GetCirOnly"
+    - "local.FppAndRangeDist"
   classifier: "sklearn.svm.SVC"
   scorer: "accuracy"
 ---
-run_4_train_2_test_milu_static_1-mocap_distance:
+run_4_train_2_test_miluv_static_1-fpp_and_ranging_only:
   datasets:
     X_train:
       - data/processed_data/X_data_static_1_target_0.jsonl
@@ -40,29 +332,6 @@ run_4_train_2_test_milu_static_1-mocap_distance:
       - data/processed_data/y_data_static_1_target_4.jsonl
       - data/processed_data/y_data_static_1_target_5.jsonl
   preprocessing:
-    - "local.MocapDistanceScaling"
-  classifier: "sklearn.svm.SVC"
-  scorer: "accuracy"
----
-run_4_train_2_test_milu_static_1-ranging_distance:
-  datasets:
-    X_train:
-      - data/processed_data/X_data_static_1_target_0.jsonl
-      - data/processed_data/X_data_static_1_target_1.jsonl
-      - data/processed_data/X_data_static_1_target_2.jsonl
-      - data/processed_data/X_data_static_1_target_3.jsonl
-    y_train:
-      - data/processed_data/y_data_static_1_target_0.jsonl
-      - data/processed_data/y_data_static_1_target_1.jsonl
-      - data/processed_data/y_data_static_1_target_2.jsonl
-      - data/processed_data/y_data_static_1_target_3.jsonl
-    X_test:
-      - data/processed_data/X_data_static_1_target_4.jsonl
-      - data/processed_data/X_data_static_1_target_5.jsonl
-    y_test:
-      - data/processed_data/y_data_static_1_target_4.jsonl
-      - data/processed_data/y_data_static_1_target_5.jsonl
-  preprocessing:
-    - "local.RangingDistanceScaling"
+    - "local.FppAndRangeDist"
   classifier: "sklearn.svm.SVC"
   scorer: "accuracy"
