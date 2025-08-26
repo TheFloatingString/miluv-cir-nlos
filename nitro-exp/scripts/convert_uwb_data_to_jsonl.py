@@ -63,8 +63,6 @@ def create_uwb_row(
     df_ranging: pd.DataFrame,
     df_cir_idx: int,
 ):
-    # print(df_cir.head())
-    # print(df_cir.columns)
     timestamp = df_cir.iloc[df_cir_idx]["timestamp"]
     tag_id = df_cir.iloc[df_cir_idx]["to_id"]
 
@@ -97,6 +95,21 @@ def convert_uwb_data_to_jsonl(
     list_of_final_rows = []
     for index, row in tqdm.tqdm(df_cir.iterrows()):
         parsed_row = create_uwb_row(df_cir, df_mocap, df_ranging, index)
+        list_of_final_rows.append(parsed_row)
+
+    return list_of_final_rows
+
+
+def n_second_time_averaging(
+    uwb_data_path: str, mocap_data_path: str, ranging_data_path: str
+):
+    df_cir = pd.read_csv(uwb_data_path)
+    df_mocap = pd.read_csv(mocap_data_path)
+    df_ranging = pd.read_csv(ranging_data_path)
+
+    list_of_final_rows = []
+    for index, row in tqdm.tqdm(df_cir.iterrows()):
+        parsed_row = create_time_averaged_uwb_row(df_cir, df_mocap, df_ranging, index)
         list_of_final_rows.append(parsed_row)
 
     return list_of_final_rows
